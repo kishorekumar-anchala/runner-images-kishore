@@ -13,8 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install PNPM
+        run: npm install -g pnpm
+
       - name: Install node-fetch for Corepack
-        run: pnpm install node-fetch
+        run: pnpm install node-fetch || npm install node-fetch
 
       - name: Setup globalThis.fetch for Corepack
         run: echo "globalThis.fetch = require('node-fetch');" >> $GITHUB_ENV
