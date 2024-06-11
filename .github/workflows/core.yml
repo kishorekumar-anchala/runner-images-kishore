@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - core-pack  # Modify this to your main branch name
-
 jobs:
-  build:
+  default:
+    strategy:
+      matrix:
+        node:
+          - 16
+          - 18
+          - 20
+
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +31,7 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ${{ matrix.node }}
