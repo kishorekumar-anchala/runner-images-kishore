@@ -1,6 +1,9 @@
 name: Showcase
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main 
 
 jobs:
   default:
