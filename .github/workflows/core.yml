@@ -1,15 +1,23 @@
-name: Showcase
+name: Your Workflow Name
 
 on:
   push:
     branches:
-      - core-pack
+      - core-pack  # Modify this to your main branch name
 
 jobs:
-  default:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install node-fetch for Corepack
+        run: pnpm install node-fetch
+
+      - name: Setup globalThis.fetch for Corepack
+        run: echo "globalThis.fetch = require('node-fetch');" >> $GITHUB_ENV
 
       - name: Enable Corepack
         run: corepack enable
@@ -18,4 +26,3 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: pnpm
