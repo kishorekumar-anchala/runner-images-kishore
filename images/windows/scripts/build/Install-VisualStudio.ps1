@@ -5,12 +5,18 @@
 
 $vsToolset = (Get-ToolsetContent).visualStudio
 
+$requiredComponents = @()
+
+foreach ($workload in $vsToolset.visualStudio.workloads) {
+    $requiredComponents += $workload
+}
+
 # Install VS
 Install-VisualStudio `
     -Version $vsToolset.subversion `
     -Edition $vsToolset.edition `
     -Channel $vsToolset.channel `
-    -RequiredComponents $vsToolset.workloads `
+    -RequiredComponents $requiredComponents `
     -ExtraArgs "--allWorkloads --includeRecommended --remove Component.CPython3.x64" `
     -SignatureThumbprint $vsToolset.signature
 
