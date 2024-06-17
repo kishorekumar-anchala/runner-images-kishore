@@ -7,7 +7,7 @@ $vsToolset = (Get-ToolsetContent).visualStudio
 
 $requiredComponents = @()
 
-foreach ($workload in $vsToolset.visualStudio.workloads) {
+foreach ($workload in $vsToolset.workloads) {
     $requiredComponents += $workload
 }
 
