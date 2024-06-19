@@ -1,0 +1,55 @@
+name: All OS
+on: [push, pull_request]
+
+jobs:
+  apple-clang:
+    name: AppleClang XCode ${{ matrix.xcode }} MacOS
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64]
+        os: [macos-13]
+        xcode: [14.3, 15.2]
+        include:
+          - xcode: 13
+            os: macos-12
+            arch: x64
+            
+  windows-msvc:
+    runs-on: windows-latest
+    name: MSVC ${{ matrix.msvc-version }} Windows
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022]
+        arch: [x64]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: egor-tensin/vs-shell@v2
+        with:
+          arch: ${{ matrix.arch }}
+
+      - name: get-cmake
+        uses: lukka/get-cmake@v3.26.0
+
+      - name: Run vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          # Location of the vcpkg as submodule of the repository.
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          useVcpkgToolchainFile: true
+          vcpkgGitCommitId: 'c8696863d371ab7f46e213d8f5ca923c4aef2a00'
+          # Since the cache must be invalidated when content of the vcpkg.json file changes, let's
+          # compute its hash and append this to the computed cache's key.
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+
+      - name: 'Run CMake'
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: 'ci'
+          buildPreset: 'ci'
+          testPreset: 'ci'
+          configurePresetCmdString: '[`--preset`, `$[env.CONFIGURE_PRESET_NAME]`]'
