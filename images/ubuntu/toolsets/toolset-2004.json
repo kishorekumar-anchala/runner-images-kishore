@@ -308,6 +308,7 @@
         ]
     },
     "rubygems": [
+        {"name": "public_suffix", "version": "5.1.1"}
         {"name": "fastlane"}
     ],
     "selenium": {
