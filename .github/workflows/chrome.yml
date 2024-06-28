@@ -8,16 +8,22 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Setup Chrome
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Chrome and ChromeDriver
       run: |
-        sudo apt-get install -y libxss1  libappindicator1 libindicator7
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo dpkg -i google-chrome*.deb
-        sudo apt-get install -f
+        $Path = $env:TEMP; $Installer = "chromesetup.exe"; Invoke-WebRequest "https://dl.google.com/chrome/install/latest/chromesetup.exe" -OutFile $Path\$Installer; Start-Process -FilePath "$Path\$Installer" -Args "/silent /install" -Verb RunAs -Wait; Remove-Item $Path\$Installer
+        $driverVersion = (Invoke-WebRequest -Uri https://chromedriver.storage.googleapis.com/LATEST_RELEASE).Content.Trim();
+        $driverUrl = "https://chromedriver.storage.googleapis.com/$driverVersion/chromedriver_win32.zip";
+        Invoke-WebRequest -Uri $driverUrl -OutFile "chromedriver.zip";
+        Expand-Archive -Path "chromedriver.zip" -DestinationPath "C:\tools\";
+        Add-MpPreference -ExclusionPath "C:\tools\";
+      shell: powershell
+
+    - name: Display Chrome and ChromeDriver version
+      run: |
         google-chrome --version
-        wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/bin/
-        sudo chown root:root /usr/bin/chromedriver
-        sudo chmod +x /usr/bin/chromedriver
         chromedriver --version
+      shell: powershell
+
