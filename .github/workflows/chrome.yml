@@ -42,3 +42,12 @@ jobs:
         # Display ChromeDriver version
         chromedriver --version
       shell: powershell
+
+    - name: Run Tests with ChromeDriver
+      run: |
+        # Example script to run tests with ChromeDriver
+        $chromeOptions = "--headless"  # Example: Run Chrome in headless mode
+        
+        # Start ChromeDriver service
+        chromedriver $chromeOptions --port=50420 --url-base=/wd/hub
+      shell: powershell
