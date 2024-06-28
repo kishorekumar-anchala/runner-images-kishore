@@ -4,7 +4,6 @@ on:
   push:
     branches: [ chrome-issue ]
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,3 +21,20 @@ jobs:
         sudo chown root:root /usr/bin/chromedriver
         sudo chmod +x /usr/bin/chromedriver
         chromedriver --version
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.101' # adjust this to your project's .NET version
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Run Selenium Tests
+      run: dotnet test --filter FullyQualifiedName~YourNamespace.YourTestClassName # replace with your test class name
