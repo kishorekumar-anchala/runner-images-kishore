@@ -7,23 +7,35 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
     - name: Setup Chrome and ChromeDriver
       run: |
-        $Path = $env:TEMP; $Installer = "chromesetup.exe"; Invoke-WebRequest "https://dl.google.com/chrome/install/latest/chromesetup.exe" -OutFile $Path\$Installer; Start-Process -FilePath "$Path\$Installer" -Args "/silent /install" -Verb RunAs -Wait; Remove-Item $Path\$Installer
-        $driverVersion = (Invoke-WebRequest -Uri https://chromedriver.storage.googleapis.com/LATEST_RELEASE).Content.Trim();
-        $driverUrl = "https://chromedriver.storage.googleapis.com/$driverVersion/chromedriver_win32.zip";
-        Invoke-WebRequest -Uri $driverUrl -OutFile "chromedriver.zip";
-        Expand-Archive -Path "chromedriver.zip" -DestinationPath "C:\tools\";
-        Add-MpPreference -ExclusionPath "C:\tools\";
-      shell: powershell
+        $Path = $env:TEMP
+        $Installer = "chromesetup.exe"
+        $chromeUrl = "https://dl.google.com/chrome/install/googlechromestandaloneenterprise64.msi"
+        
+        # Download Chrome setup
+        Invoke-WebRequest -Uri $chromeUrl -OutFile "$Path\$Installer" -ErrorAction Stop
+        
+        # Install Chrome silently
+        Start-Process -FilePath "msiexec.exe" -ArgumentList "/i $Path\$Installer /quiet /norestart" -Wait
+        
+        # Remove downloaded installer
+        Remove-Item "$Path\$Installer"
+
+        # Download and setup ChromeDriver
+        $driverVersion = (Invoke-WebRequest -Uri https://chromedriver.storage.googleapis.com/LATEST_RELEASE).Content.Trim()
+        $driverUrl = "https://chromedriver.storage.googleapis.com/$driverVersion/chromedriver_win32.zip"
+        Invoke-WebRequest -Uri $driverUrl -OutFile "chromedriver.zip"
+        Expand-Archive -Path "chromedriver.zip" -DestinationPath "C:\tools\"
+        Add-MpPreference -ExclusionPath "C:\tools\"
 
     - name: Display Chrome and ChromeDriver version
       run: |
         google-chrome --version
         chromedriver --version
       shell: powershell
-
