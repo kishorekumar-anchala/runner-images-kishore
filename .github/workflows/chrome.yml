@@ -36,6 +36,9 @@ jobs:
 
     - name: Display Chrome and ChromeDriver version
       run: |
-        google-chrome --version
+        # Display Chrome version
+        Get-ChildItem "C:\Program Files\Google\Chrome\Application\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1 | ForEach-Object { $_.Name }
+
+        # Display ChromeDriver version
         chromedriver --version
       shell: powershell
