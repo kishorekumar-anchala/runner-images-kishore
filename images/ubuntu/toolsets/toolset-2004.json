@@ -148,7 +148,6 @@
             "libmagic-dev",
             "libmagickcore-dev",
             "libmagickwand-dev",
-            "libstdc++6"
             "libsecret-1-dev",
             "libsqlite3-dev",
             "libyaml-dev",
