@@ -1,0 +1,12 @@
+name: Check Ulimit
+
+on: [push]
+
+jobs:
+  check-ulimit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Run ulimit -a
+      run: |
+        ulimit -a
