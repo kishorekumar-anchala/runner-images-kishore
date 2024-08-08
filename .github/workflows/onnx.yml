@@ -1,0 +1,29 @@
+name: Install and Import ONNX
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install onnx
+
+      - name: Create Python script
+        run: |
+          echo "import onnx" > test_onnx.py
+
+      - name: Run Python script
+        run: python test_onnx.py
