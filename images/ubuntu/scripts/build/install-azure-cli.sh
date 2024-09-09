@@ -4,6 +4,17 @@
 ##  Desc:  Install Azure CLI (az)
 ################################################################################
 
+# Source the helpers for use with the script
+source $HELPER_SCRIPTS/etc-environment.sh
+
+export AZURE_CONFIG_DIR="/opt/az-config"
+mkdir $AZURE_CONFIG_DIR
+set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
+
+export AZURE_EXTENSION_DIR="/opt/az-extensions"
+mkdir $AZURE_EXTENSION_DIR
+set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
+
 # Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
@@ -11,5 +22,12 @@ echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-lin
 
 rm -f /etc/apt/sources.list.d/azure-cli.list
 rm -f /etc/apt/sources.list.d/azure-cli.list.save
+
+echo "Warmup 'az'"
+az --help > /dev/null
+if [ $? -ne 0 ]; then
+    echo "Command 'az --help' failed"
+    exit 1
+fi
 
 invoke_tests "CLI.Tools" "Azure CLI"
