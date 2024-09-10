@@ -23,6 +23,14 @@ echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-lin
 rm -f /etc/apt/sources.list.d/azure-cli.list
 rm -f /etc/apt/sources.list.d/azure-cli.list.save
 
+AZ_CLI_VERSION=$(az --version | grep azure-cli | awk '{print $2}')
+if [ -z "$AZ_CLI_VERSION" ]; then
+    echo "Failed to capture Azure CLI version"
+    exit 1
+fi
+set_etc_environment_variable "AZ_CLI_VERSION" $AZ_CLI_VERSION
+
+
 echo "Warmup 'az'"
 az --help > /dev/null
 if [ $? -ne 0 ]; then
