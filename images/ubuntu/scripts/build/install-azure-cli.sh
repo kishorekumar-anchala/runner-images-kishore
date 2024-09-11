@@ -8,11 +8,11 @@
 source $HELPER_SCRIPTS/etc-environment.sh
 
 export AZURE_CONFIG_DIR="/opt/az-config"
-mkdir $AZURE_CONFIG_DIR
+mkdir -p $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
 export AZURE_EXTENSION_DIR="/opt/az-extensions"
-mkdir $AZURE_EXTENSION_DIR
+mkdir -p $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
 
 # Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
