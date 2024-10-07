@@ -14,11 +14,11 @@ curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt" >> $HELPER_SCRIPTS/apt-sources.txt
 
-export AZURE_CONFIG_DIR="$HOME/.azure"
+export AZURE_CONFIG_DIR="/opt/az-config"
 mkdir -p $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
-export AZURE_EXTENSION_DIR="$HOME/.azure/cli-extensions"
+export AZURE_EXTENSION_DIR="/opt/az-extensions"
 mkdir -p $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
 
