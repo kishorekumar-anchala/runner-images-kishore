@@ -7,11 +7,11 @@
 # Source the helpers for use with the script
 source $HELPER_SCRIPTS/etc-environment.sh
 
-export AZURE_CONFIG_DIR="/opt/az-config"
+export AZURE_CONFIG_DIR="$HOME/.azure"
 mkdir -p $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
-export AZURE_EXTENSION_DIR="/opt/az-extensions"
+export AZURE_EXTENSION_DIR="$HOME/.azure/cli-extensions"
 mkdir -p $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
 
@@ -20,16 +20,6 @@ curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt" >> $HELPER_SCRIPTS/apt-sources.txt
 
-rm -f /etc/apt/sources.list.d/azure-cli.list
-rm -f /etc/apt/sources.list.d/azure-cli.list.save
-
-AZ_CLI_VERSION=$(az --version | grep azure-cli | awk '{print $2}')
-if [ -z "$AZ_CLI_VERSION" ]; then
-    echo "Failed to capture Azure CLI version"
-    exit 1
-fi
-set_etc_environment_variable "AZ_CLI_VERSION" $AZ_CLI_VERSION
-
 
 echo "Warmup 'az'"
 az --help > /dev/null
@@ -37,5 +27,8 @@ if [ $? -ne 0 ]; then
     echo "Command 'az --help' failed"
     exit 1
 fi
+
+rm -f /etc/apt/sources.list.d/azure-cli.list
+rm -f /etc/apt/sources.list.d/azure-cli.list.save
 
 invoke_tests "CLI.Tools" "Azure CLI"
