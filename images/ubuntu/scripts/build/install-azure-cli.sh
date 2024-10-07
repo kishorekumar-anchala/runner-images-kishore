@@ -7,6 +7,13 @@
 # Source the helpers for use with the script
 source $HELPER_SCRIPTS/etc-environment.sh
 
+
+
+# Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt" >> $HELPER_SCRIPTS/apt-sources.txt
+
 export AZURE_CONFIG_DIR="$HOME/.azure"
 mkdir -p $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
@@ -14,12 +21,6 @@ set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 export AZURE_EXTENSION_DIR="$HOME/.azure/cli-extensions"
 mkdir -p $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
-
-# Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-echo "azure-cli https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt" >> $HELPER_SCRIPTS/apt-sources.txt
-
 
 echo "Warmup 'az'"
 az --help > /dev/null
