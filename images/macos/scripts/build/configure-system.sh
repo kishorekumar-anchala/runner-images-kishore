@@ -47,3 +47,9 @@ echo "Indexing completed"
 
 # delete symlink for tests running
 sudo rm -f /usr/local/bin/invoke_tests
+
+# Clean Homebrew downloads
+sudo rm -rf /Users/$USER/Library/Caches/Homebrew/downloads/*
+
+# Uninstall expect used in configure-machine.sh
+brew uninstall expect
