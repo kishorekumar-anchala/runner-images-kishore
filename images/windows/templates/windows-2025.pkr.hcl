@@ -176,7 +176,12 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
-
+  
+  plan_info {
+    plan_name                            = "windows-server-2025-azure-edition-hotpatch"
+    plan_product                         = "microsoftserveroperatingsystems-previews"
+    plan_publisher                       = "microsoftwindowsserver"
+  }
   dynamic "azure_tag" {
     for_each = var.azure_tags
     content {
