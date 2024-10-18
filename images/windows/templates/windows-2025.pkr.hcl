@@ -148,6 +148,11 @@ variable "vm_size" {
   default = "Standard_F8s_v2"
 }
 
+variable "use_secured_core" {
+  type    = bool
+  default = false
+}
+
 source "azure-arm" "image" {
   allowed_inbound_ip_addresses           = "${var.allowed_inbound_ip_addresses}"
   build_resource_group_name              = "${var.build_resource_group_name}"
@@ -243,14 +248,15 @@ build {
   provisioner "powershell" {
     elevated_password = "${var.install_password}"
     elevated_user     = "${var.install_user}"
-    inline            = ["bcdedit /enum",
-                         "bcdedit.exe /set TESTSIGNING ON",
-                         "bcdedit.exe /set hypervisorlaunchtype auto"
-                        ]
+    inline            = [
+      "bcdedit /enum",
+      "bcdedit.exe /set TESTSIGNING ON",
+      "bcdedit.exe /set hypervisorlaunchtype auto"
+    ]
   }
 
   provisioner "powershell" {
-    environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}"]
+    environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}", "USE_SECURED_CORE=${var.use_secured_core}"]
     execution_policy = "unrestricted"
     scripts          = [
       "${path.root}/../scripts/build/Configure-WindowsDefender.ps1",
