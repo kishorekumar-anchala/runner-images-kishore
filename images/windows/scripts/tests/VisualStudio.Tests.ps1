@@ -32,7 +32,7 @@ Describe "Windows 10 SDK" {
 }
 
 Describe "Windows 11 SDK" {
-    It "Verifies 22621 SDK is installed" -Skip:(Test-IsWin22) {
+    It "Verifies 22621 SDK is installed" -Skip:(Test-IsWin22 -or Test-IsWin25) {
         "${env:ProgramFiles(x86)}\Windows Kits\10\DesignTime\CommonConfiguration\Neutral\UAP\10.0.22621.0\UAP.props" | Should -Exist
     }
 }

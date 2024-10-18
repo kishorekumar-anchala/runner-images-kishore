@@ -22,7 +22,7 @@ Describe "Bicep" {
     }
 }
 
-Describe "GitVersion" -Skip:(Test-IsWin22) {
+Describe "GitVersion" -Skip:(Test-Is -or Test-IsWin25) {
     It "gitversion is installed" {
         "gitversion /version" | Should -ReturnZeroExitCode
     }
