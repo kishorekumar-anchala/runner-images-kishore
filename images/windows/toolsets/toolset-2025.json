@@ -170,7 +170,7 @@
         { "name": "HypervisorPlatform", "optionalFeature": true },
         { "name": "Hyper-V-PowerShell" },
         { "name": "Wireless-Networking" },
-        { "name": "NET-Framework-Features", "includeAllSubFeatures": true }
+        { "name": "NET-Framework-Features", "includeAllSubFeatures": false }
     ],
     "visualStudio": {
         "version" : "2022",
