@@ -42,12 +42,15 @@ if (Test-IsWin19) {
         -ExpectedSignature 'E4C5C5FCDB68B930EE4E19BC25D431EF6D864C51'   
 }
 
-if (Test-IsWin22 -or Test-IsWin25) {    
+if (Test-IsWin22) {    
     # Install Windows 10 SDK version 10.0.17763
     Install-Binary -Type EXE `
         -Url 'https://go.microsoft.com/fwlink/p/?LinkID=2033908' `
         -InstallArgs @("/q", "/norestart", "/ceip off", "/features OptionId.UWPManaged OptionId.UWPCPP OptionId.UWPLocalized OptionId.DesktopCPPx86 OptionId.DesktopCPPx64 OptionId.DesktopCPParm64") `
         -ExpectedSignature '7535269B94C1FEA4A5EF6D808E371DA242F27936'
+}
+if (Test-IsWin25){
+    Write-Host "It is  for windows-25 testing"
 }
 
 Invoke-PesterTests -TestFile "VisualStudio"
