@@ -32,7 +32,7 @@ if (Test-IsWin19) {
 
 }
 
-if (Test-IsWin22 -or Test-IsWin25) {
+if (-not (Test-IsWin19)) {
     # If Windows 2022, install version specified in the toolset
     $version = (Get-ToolsetContent).mingw.version
     $runtime = (Get-ToolsetContent).mingw.runtime

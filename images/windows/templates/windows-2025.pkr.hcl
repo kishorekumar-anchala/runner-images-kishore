@@ -245,23 +245,17 @@ build {
     elevated_password = "${var.install_password}"
     elevated_user     = "${var.install_user}"
     inline            = [
-      "bcdedit /enum",
-      "bcdedit.exe /set TESTSIGNING ON"
+      
+      "bcdedit.exe /set TESTSIGNING ON",
+      "bcdedit.exe /set hypervisorlaunchtype auto"
       
     ]
-  }
-
-  provisioner "powershell"{
-    inline             = ["bcdedit.exe /set hypervisorlaunchtype auto"]
   }
 
   provisioner "windows-restart" {
     restart_timeout = "10m"
   }
 
-  provisioner "powershell" {
-    inline            = ["bcdedit /enum"]
-  }
 
   provisioner "powershell" {
     environment_vars = ["IMAGE_VERSION=${var.image_version}", "IMAGE_OS=${var.image_os}", "AGENT_TOOLSDIRECTORY=${var.agent_tools_directory}", "IMAGEDATA_FILE=${var.imagedata_file}", "IMAGE_FOLDER=${var.image_folder}"]
@@ -348,8 +342,8 @@ build {
     restart_timeout = "10m"
   }
 
-  provisioner "windows-shell" {
-    inline = ["wmic product where \"name like '%%microsoft azure powershell%%'\" call uninstall /nointeractive"]
+  provisioner "powershell" {
+    inline            = ["(Get-CimInstance -ClassName Win32_Process).name | sort"]
   }
 
   provisioner "powershell" {

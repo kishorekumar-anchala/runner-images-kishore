@@ -55,13 +55,13 @@ Describe "DACFx" {
         "${sqlPackagePath}" | Should -Exist
     }
 
-    It "SqlLocalDB" -Skip:(Test-IsWin22 -or Test-IsWin25) {
+    It "SqlLocalDB" -Skip:(-not (Test-IsWin19)) {
         $sqlLocalDBPath = 'C:\Program Files\Microsoft SQL Server\130\Tools\Binn\SqlLocalDB.exe'
         "${sqlLocalDBPath}" | Should -Exist
     }
 }
 
-Describe "DotnetTLS" -Skip:(Test-IsWin22 -or Test-IsWin25) {
+Describe "DotnetTLS" -Skip:(-not (Test-IsWin19)) {
     It "Tls 1.2 is enabled" {
         [Net.ServicePointManager]::SecurityProtocol -band "Tls12" | Should -Be Tls12
     }
@@ -101,7 +101,7 @@ Describe "Mingw64" {
     }
 }
 
-Describe "GoogleCloudCLI" -Skip:(Test-IsWin22 -or Test-IsWin25) {
+Describe "GoogleCloudCLI" -Skip:(-not (Test-IsWin19)) {
     It "<ToolName>" -TestCases @(
         @{ ToolName = "bq" }
         @{ ToolName = "gcloud" }
@@ -175,7 +175,7 @@ Describe "Vcpkg" {
     }
 }
 
-Describe "VCRedist" -Skip:(Test-IsWin22 -or Test-IsWin25) {
+Describe "VCRedist" -Skip:(-not (Test-IsWin19)) {
     It "vcredist_2010_x64" {
         "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{1D8E6291-B0D5-35EC-8441-6616F567A0F7}" | Should -Exist
         "C:\Windows\System32\msvcr100.dll" | Should -Exist
