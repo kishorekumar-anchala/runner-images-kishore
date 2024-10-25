@@ -53,4 +53,6 @@ if (Test-IsWin25){
     Write-Host "It is  for windows-25 testing"
 }
 
+#Dissiable Pester test(Temp)
+
 Invoke-PesterTests -TestFile "VisualStudio"
