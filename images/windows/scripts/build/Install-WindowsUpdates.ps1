@@ -19,8 +19,14 @@ function Install-WindowsUpdates {
     }
 
     Write-Host "Installing windows updates"
-    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID "KB5034439" -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
-
+        # Added KB5044030 to the excluded list since it is failing for 2025
+    if (Test-IsWin25) {
+            $excludedKBs = @("KB5034439", "KB5044030")
+    }else {
+            $excludedKBs = @("KB5034439")
+    }
+    $excludedKBs = @("KB5034439", "KB5044030")
+    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID $excludedKBs -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
     Write-Host "Validating windows updates installation"
     # Get-WUHistory doesn't support Windows Server 2022
     $notFailedUpdateNames = Get-WindowsUpdateStates | Where-Object { $_.State -in ("Installed", "Running") } | Select-Object -ExpandProperty Title
