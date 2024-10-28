@@ -49,9 +49,7 @@ if (Test-IsWin22) {
         -InstallArgs @("/q", "/norestart", "/ceip off", "/features OptionId.UWPManaged OptionId.UWPCPP OptionId.UWPLocalized OptionId.DesktopCPPx86 OptionId.DesktopCPPx64 OptionId.DesktopCPParm64") `
         -ExpectedSignature '7535269B94C1FEA4A5EF6D808E371DA242F27936'
 }
-if (Test-IsWin25){
-    Write-Host "It is  for windows-25 testing"
-}
+
 
 
 Invoke-PesterTests -TestFile "VisualStudio"
