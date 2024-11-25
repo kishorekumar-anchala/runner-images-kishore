@@ -550,25 +550,22 @@ function Get-GithubReleasesByVersion {
     )
 
     $localCacheFile = Join-Path ${env:TEMP} "github-releases_$($Repository -replace "/", "_").json"
+    # Clear cache file 
+    Remove-Item $localCacheFile -ErrorAction SilentlyContinue 
+    Write-Output "Cached data has been cleared."
 
-    if (Test-Path $localCacheFile) {
-        $releases = Get-Content $localCacheFile | ConvertFrom-Json
-        Write-Debug "Found cached releases for ${Repository} in local file"
-        Write-Debug "Release count: $($releases.Count)"
-    } else {
-        $releases = @()
-        $page = 1
-        $pageSize = 100
-        do {
-            $releasesPage = Invoke-RestMethod -Uri "https://api.github.com/repos/${Repository}/releases?per_page=${pageSize}&page=${page}"
-            $releases += $releasesPage
-            $page++
-        } while ($releasesPage.Count -eq $pageSize)
+    $releases = @()
+    $page = 1
+    $pageSize = 100
+    do {
+        $releasesPage = Invoke-RestMethod -Uri "https://api.github.com/repos/${Repository}/releases?per_page=${pageSize}&page=${page}"
+        $releases += $releasesPage
+        $page++
+    } while ($releasesPage.Count -eq $pageSize)
 
-        Write-Debug "Found $($releases.Count) releases for ${Repository}"
-        Write-Debug "Caching releases for ${Repository} in local file"
-        $releases | ConvertTo-Json -Depth 10 | Set-Content $localCacheFile
-    }
+    Write-Debug "Found $($releases.Count) releases for ${Repository}"
+    Write-Debug "Caching releases for ${Repository} in local file"
+    $releases | ConvertTo-Json -Depth 10 | Set-Content $localCacheFile
 
     if (-not $releases) {
         throw "Failed to get releases from ${Repository}"
