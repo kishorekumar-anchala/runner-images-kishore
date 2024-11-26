@@ -60,28 +60,51 @@ if ($null -ne ($toolsetVersion | Select-String -Pattern '\d+\.\d+\.\d+')) {
 
 # Return the previous value of ErrorAction and invoke Install-Binary function
 $ErrorActionPreference = $errorActionOldValue
-$installerArgs = @("--install_runtimes 1", "--superpassword root", "--enable_acledit 1", "--unattendedmodeui none", "--mode unattended")
-Install-Binary `
-    -Url $installerUrl `
-    -InstallArgs $installerArgs `
-    -ExpectedSignature (Get-ToolsetContent).postgresql.signature
+$installerArgs = @("--install_runtimes 0", "--superpassword root", "--enable_acledit 1", "--unattendedmodeui none", "--mode unattended")
 
-# Get Path to pg_ctl.exe
-$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'").PathName
+# Retry installation up to 5 times
+$maxRetries = 5
+$retryCount = 0
+$installSuccess = $false
 
-# Parse output of command above to obtain pure path
-$pgBin = Split-Path -Path $pgPath.split('"')[1]
-$pgRoot = Split-Path -Path $pgPath.split('"')[5]
-$pgData = Join-Path $pgRoot "data"
+while ($retryCount -lt $maxRetries -and !$installSuccess) {
+    try {
+        # Attempt installation
+        Install-Binary `
+            -Url $installerUrl `
+            -InstallArgs $installerArgs `
+            -ExpectedSignature (Get-ToolsetContent).postgresql.signature
+        
+        # Get Path to pg_ctl.exe
+        $pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'").PathName
 
-# Validate PostgreSQL installation
-$pgReadyPath = Join-Path $pgBin "pg_isready.exe"
-$pgReady = Start-Process -FilePath $pgReadyPath -Wait -PassThru
-$exitCode = $pgReady.ExitCode
+        # Parse output of command above to obtain pure path
+        $pgBin = Split-Path -Path $pgPath.split('"')[1]
+        $pgRoot = Split-Path -Path $pgPath.split('"')[5]
+        $pgData = Join-Path $pgRoot "data"
 
-if ($exitCode -ne 0) {
-    Write-Host -Object "PostgreSQL is not ready. Exitcode: $exitCode"
-    exit $exitCode
+        # Validate PostgreSQL installation
+        $pgReadyPath = Join-Path $pgBin "pg_isready.exe"
+        $pgReady = Start-Process -FilePath $pgReadyPath -Wait -PassThru
+        $exitCode = $pgReady.ExitCode
+
+        if ($exitCode -eq 0) {
+            $installSuccess = $true
+            Write-Host "PostgreSQL installed successfully."
+        } else {
+            Write-Host "PostgreSQL is not ready. Exitcode: $exitCode"
+            throw "Installation failed with exit code $exitCode"
+        }
+    } catch {
+        $retryCount++
+        Write-Host "Installation failed. Retry attempt $retryCount of $maxRetries."
+        Start-Sleep -Seconds 10  # Wait 10 seconds before retrying
+    }
+}
+
+if (-not $installSuccess) {
+    Write-Host "PostgreSQL installation failed after $maxRetries attempts."
+    exit 1
 }
 
 # Added PostgreSQL environment variable
