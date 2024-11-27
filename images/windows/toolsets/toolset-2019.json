@@ -349,7 +349,9 @@
             "Microsoft.VisualStudio.Workload.Universal",
             "Microsoft.VisualStudio.Workload.VisualStudioExtension",
             "Component.MDD.Linux",
-            "Component.MDD.Linux.GCC.arm"
+            "Component.MDD.Linux.GCC.arm",
+            "Microsoft.VisualStudio.Component.VC.Redist.14.x64",
+            "Microsoft.VisualStudio.Component.VC.Redist.14.x86"
         ],
         "vsix": [
             "ProBITools.MicrosoftAnalysisServicesModelingProjects",
