@@ -13,7 +13,8 @@ $pgPwd = "root"
 
 # Install Visual C++ Redistributables (x86 and x64)
 $vcUrls = @(
-    "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+    "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+    "https://aka.ms/vs/17/release/vc_redist.x86.exe"
 )
 
 foreach ($url in $vcUrls) {
