@@ -2,7 +2,7 @@ packer {
   required_plugins {
     azure = {
       source  = "github.com/hashicorp/azure"
-      version = "1.4.5"
+      version = ">=2.0.1"
     }
   }
 }
@@ -149,6 +149,7 @@ variable "vm_size" {
 }
 
 source "azure-arm" "image" {
+  use_oidc                               = true
   allowed_inbound_ip_addresses           = "${var.allowed_inbound_ip_addresses}"
   build_resource_group_name              = "${var.build_resource_group_name}"
   client_cert_path                       = "${var.client_cert_path}"
