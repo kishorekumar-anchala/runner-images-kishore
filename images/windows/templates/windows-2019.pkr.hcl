@@ -149,7 +149,6 @@ variable "vm_size" {
 }
 
 source "azure-arm" "image" {
-  use_oidc                               = true
   allowed_inbound_ip_addresses           = "${var.allowed_inbound_ip_addresses}"
   build_resource_group_name              = "${var.build_resource_group_name}"
   client_cert_path                       = "${var.client_cert_path}"
