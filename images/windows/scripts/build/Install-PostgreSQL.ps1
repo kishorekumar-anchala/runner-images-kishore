@@ -15,11 +15,11 @@ $pgPwd = "root"
 $vcFiles = @(
     @{
         Url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-        ExpectedHash = "EXPECTED_HASH_X64" 
+        ExpectedHash = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D" 
     },
     @{
         Url = "https://aka.ms/vs/17/release/vc_redist.x86.exe"
-        ExpectedHash = "EXPECTED_HASH_X86" 
+        ExpectedHash = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D" 
     }
 )
 
