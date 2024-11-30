@@ -33,11 +33,6 @@ foreach ($vcFile in $vcFiles) {
     -InstallArgs @("/install", "/quiet", "/norestart") `
     -ExpectedSignature $vcRedistSignature
 
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "Failed to install $installer. Exiting."
-        exit 1
-    }
-
     Write-Host "Removing $installer ..."
     Remove-Item $installer
 }
