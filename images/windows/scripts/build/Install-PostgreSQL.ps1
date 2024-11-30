@@ -13,33 +13,25 @@ $pgPwd = "root"
 
 # Install Visual C++ Redistributables (x86 and x64)
 $vcFiles = @(
-    @{
-        Url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-        ExpectedHash = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D" 
-    },
-    @{
-        Url = "https://aka.ms/vs/17/release/vc_redist.x86.exe"
-        ExpectedHash = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D" 
-    }
+        "https://aka.ms/vs/17/release/vc_redist.x64.exe",
+        "https://aka.ms/vs/17/release/vc_redist.x86.exe"
+     
 )
 
 foreach ($vcFile in $vcFiles) {
-    $url = $vcFile.Url
-    $expectedHash = $vcFile.ExpectedHash
+    $url = $vcFile
+    $vcRedistSignature = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D"
     
     $installer = Join-Path $env:TEMP (Split-Path $url -Leaf)
     Write-Host "Downloading $url ..."
     Invoke-WebRequest -Uri $url -OutFile $installer
 
-    # Verify SHA256 hash of the downloaded file
-    $downloadedHash = (Get-FileHash -Path $installer -Algorithm SHA256).Hash.ToLower()
-    if ($downloadedHash -ne $expectedHash.ToLower()) {
-        Write-Host "Hash mismatch for $installer. Expected: $expectedHash, but got: $downloadedHash. Exiting."
-        exit 1
-    }
-
     Write-Host "Installing $installer ..."
-    Start-Process -FilePath $installer -ArgumentList "/install", "/quiet", "/norestart" -Wait
+
+    Install-Binary `
+    -Url $url `
+    -InstallArgs @("/install", "/quiet", "/norestart") `
+    -ExpectedSignature $vcRedistSignature
 
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Failed to install $installer. Exiting."
