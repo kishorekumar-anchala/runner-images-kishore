@@ -94,7 +94,7 @@ $ErrorActionPreference = $errorActionOldValue
 # Install PostgreSQL
 Write-Host "Starting PostgreSQL installation ..."
 $installerArgs = @(
-    "--install_runtimes 0",
+    "--install_runtimes 1",
     "--superpassword root",
     "--enable_acledit 1",
     "--unattendedmodeui none",
