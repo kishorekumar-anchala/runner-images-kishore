@@ -11,32 +11,6 @@ $pgPwd = "root"
 [Environment]::SetEnvironmentVariable("PGUSER", $pgUser, "Machine")
 [Environment]::SetEnvironmentVariable("PGPASSWORD", $pgPwd, "Machine")
 
-# Install Visual C++ Redistributables (x86 and x64)
-$vcFiles = @(
-        "https://aka.ms/vs/17/release/vc_redist.x64.exe",
-        "https://aka.ms/vs/17/release/vc_redist.x86.exe"
-     
-)
-
-foreach ($vcFile in $vcFiles) {
-    $url = $vcFile
-    $vcRedistSignature = "245D262748012A4FE6CE8BA6C951A4C4AFBC3E5D"
-    
-    $installer = Join-Path $env:TEMP (Split-Path $url -Leaf)
-    Write-Host "Downloading $url ..."
-    Invoke-WebRequest -Uri $url -OutFile $installer
-
-    Write-Host "Installing $installer ..."
-
-    Install-Binary `
-    -Url $url `
-    -InstallArgs @("/install", "/quiet", "/norestart") `
-    -ExpectedSignature $vcRedistSignature
-
-    Write-Host "Removing $installer ..."
-    Remove-Item $installer
-}
-
 # Define the installer URL
 $toolsetVersion = (Get-ToolsetContent).postgresql.version
 if ($null -ne ($toolsetVersion | Select-String -Pattern '\d+\.\d+\.\d+')) {
