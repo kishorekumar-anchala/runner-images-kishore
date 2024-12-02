@@ -7,21 +7,6 @@
 $pgUser = "postgres"
 $pgPwd = "root"
 
-# Clean previous PostgreSQL installation
-Stop-Service -Name "postgresql*" -ErrorAction SilentlyContinue
-Get-Service -Name "postgresql*" -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
-
-$pathsToRemove = @(
-    "C:\Program Files\PostgreSQL",
-    "C:\PostgreSQL",
-    "C:\Users\$env:USERNAME\AppData\Local\Temp\postgresql_installer*",
-    "HKLM:\SOFTWARE\PostgreSQL\"
-)
-
-foreach ($path in $pathsToRemove) {
-    Remove-Item -Recurse -Force $path -ErrorAction SilentlyContinue
-}
-
 
 # Prepare environment variable for validation
 [Environment]::SetEnvironmentVariable("PGUSER", $pgUser, "Machine")
