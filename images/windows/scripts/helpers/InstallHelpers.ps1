@@ -123,9 +123,9 @@ function Install-Binary {
         } else {
             Write-Host "Installation process returned unexpected exit code: $exitCode"
             Write-Host "Standard Output:" 
-            Write-Host (Get-Content -Path "$env:TEMP_DIR\$($Name)_stdout.txt" -Raw)
+            Write-Host (Get-Content -Path "${DownloadPath}\$($Name)_stdout.txt" -Raw)
             Write-Host "Standard Error:" 
-            Write-Host (Get-Content -Path "$env:TEMP_DIR\$($Name)_stderr.txt" -Raw)
+            Write-Host (Get-Content -Path "${DownloadPath}\$($Name)_stderr.txt" -Raw)
             Write-Host "Time elapsed: $installCompleteTime seconds"
             exit $exitCode
         }
