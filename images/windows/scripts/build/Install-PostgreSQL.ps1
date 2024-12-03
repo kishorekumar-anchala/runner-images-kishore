@@ -68,7 +68,7 @@ Install-Binary `
     -ExpectedSignature (Get-ToolsetContent).postgresql.signature
 
 # Get Path to pg_ctl.exe
-$pgService = Get-Service -Name "postgresql-*" -ErrorAction SilentlyContinue 
+$pgService = Get-Service -Name "postgresql-x64-*" -ErrorAction SilentlyContinue 
 if ($pgService -eq $null) { 
     Write-Host "PostgreSQL service not found. Exiting." 
     exit 1 
