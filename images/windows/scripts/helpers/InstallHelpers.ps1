@@ -46,7 +46,8 @@ function Install-Binary {
         [String[]] $ExtraInstallArgs,
         [String[]] $ExpectedSignature,
         [String] $ExpectedSHA256Sum,
-        [String] $ExpectedSHA512Sum
+        [String] $ExpectedSHA512Sum,
+        [String] $DownloadPath = $env:TEMP_DIR
     )
 
     if ($PSCmdlet.ParameterSetName -eq "LocalPath") {
@@ -121,10 +122,10 @@ function Install-Binary {
             Write-Host "Installation successful in $installCompleteTime seconds. Reboot is required."
         } else {
             Write-Host "Installation process returned unexpected exit code: $exitCode"
-            Write-Host "Standard Output:"
-            Write-Host $process.StandardOutput.ReadToEnd()
-            Write-Host "Standard Error:"
-            Write-Host $process.StandardError.ReadToEnd()
+            Write-Host "Standard Output:" 
+            Write-Host (Get-Content -Path "$env:TEMP_DIR\$($Name)_stdout.txt" -Raw)
+            Write-Host "Standard Error:" 
+            Write-Host (Get-Content -Path "$env:TEMP_DIR\$($Name)_stderr.txt" -Raw)
             Write-Host "Time elapsed: $installCompleteTime seconds"
             exit $exitCode
         }

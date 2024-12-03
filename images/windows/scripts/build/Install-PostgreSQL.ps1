@@ -65,7 +65,8 @@ $installerArgs = @("--install_runtimes 1", "--superpassword root", "--enable_acl
 Install-Binary `
     -Url $installerUrl `
     -InstallArgs $installerArgs `
-    -ExpectedSignature (Get-ToolsetContent).postgresql.signature
+    -ExpectedSignature (Get-ToolsetContent).postgresql.signature `
+    -DownloadPath $env:TEMP_DIR
 
 # Get Path to pg_ctl.exe
 $pgService = Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'" 
