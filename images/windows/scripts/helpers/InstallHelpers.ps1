@@ -46,8 +46,7 @@ function Install-Binary {
         [String[]] $ExtraInstallArgs,
         [String[]] $ExpectedSignature,
         [String] $ExpectedSHA256Sum,
-        [String] $ExpectedSHA512Sum,
-        [String] $DownloadPath = $env:TEMP_DIR
+        [String] $ExpectedSHA512Sum
     )
 
     if ($PSCmdlet.ParameterSetName -eq "LocalPath") {

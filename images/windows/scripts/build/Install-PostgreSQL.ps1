@@ -65,11 +65,10 @@ $installerArgs = @("--install_runtimes 1", "--superpassword root", "--enable_acl
 Install-Binary `
     -Url $installerUrl `
     -InstallArgs $installerArgs `
-    -ExpectedSignature (Get-ToolsetContent).postgresql.signature `
-    -DownloadPath $env:TEMP_DIR
+    -ExpectedSignature (Get-ToolsetContent).postgresql.signature
 
 # Get Path to pg_ctl.exe
-$pgService = Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'" 
+$pgService = Get-Service -Name "postgresql-*" -ErrorAction SilentlyContinue 
 if ($pgService -eq $null) { 
     Write-Host "PostgreSQL service not found. Exiting." 
     exit 1 
