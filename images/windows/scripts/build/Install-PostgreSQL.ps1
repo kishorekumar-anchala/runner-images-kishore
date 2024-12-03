@@ -68,43 +68,52 @@ Install-Binary `
     -ExpectedSignature (Get-ToolsetContent).postgresql.signature
 
 # Get Path to pg_ctl.exe
-$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'").PathName
-
-# Parse output of command above to obtain pure path
-$pgBin = Split-Path -Path $pgPath.split('"')[1]
-$pgRoot = Split-Path -Path $pgPath.split('"')[5]
-$pgData = Join-Path $pgRoot "data"
-
-# Initialize data directory if not already initialized
-
-if (-Not (Test-Path (Join-Path $pgData "postgresql.conf"))) {
-
-    Write-Host "Initializing PostgreSQL data directory..."
-
-    $initDbPath = Join-Path $pgBin "initdb.exe"
-
-    & $initDbPath -D $pgData -U $pgUser -W $pgPwd
-
-}
-
-# Validate PostgreSQL installation
-$pgReadyPath = Join-Path $pgBin "pg_isready.exe"
-$pgReady = Start-Process -FilePath $pgReadyPath -Wait -PassThru
-$exitCode = $pgReady.ExitCode
-
-if ($exitCode -ne 0) {
-    Write-Host -Object "PostgreSQL is not ready. Exitcode: $exitCode"
-    exit $exitCode
-}
-
-# Added PostgreSQL environment variable
-[Environment]::SetEnvironmentVariable("PGBIN", $pgBin, "Machine")
-[Environment]::SetEnvironmentVariable("PGROOT", $pgRoot, "Machine")
-[Environment]::SetEnvironmentVariable("PGDATA", $pgData, "Machine")
-
-# Stop and disable PostgreSQL service
-$pgService = Get-Service -Name postgresql*
-Stop-Service $pgService
-$pgService | Set-Service -StartupType Disabled
-
-Invoke-PesterTests -TestFile "Databases" -TestName "PostgreSQL"
+$pgService = Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'" 
+if ($pgService -eq $null) { 
+    Write-Host "PostgreSQL service not found. Exiting." 
+    exit 1 
+} 
+$pgPath = $pgService.PathName 
+# Display the retrieved path 
+Write-Host "PostgreSQL service path: $pgPath" 
+# Check if $pgPath is null 
+if ($pgPath -ne "") { 
+    $splitResult = $pgPath.split('"') 
+    if ($splitResult.Length -gt 1) 
+    { 
+        $pgBin = Split-Path -Path $splitResult[1] 
+        $pgRoot = Split-Path -Path $splitResult[5] 
+        $pgData = Join-Path $pgRoot "data" 
+        # Log paths and environment variables 
+        Write-Host "pgBin: $pgBin" 
+        Write-Host "pgRoot: $pgRoot" 
+        Write-Host "pgData: $pgData" 
+        # Initialize data directory if not already initialized 
+        if (-Not (Test-Path (Join-Path $pgData "postgresql.conf"))) 
+        { 
+            Write-Host "Initializing PostgreSQL data directory..." 
+            $initDbPath = Join-Path $pgBin "initdb.exe" 
+            & $initDbPath -D $pgData -U $pgUser -W $pgPwd 
+        } 
+        # Validate PostgreSQL installation 
+        $pgReadyPath = Join-Path $pgBin "pg_isready.exe" 
+        $pgReady = Start-Process -FilePath $pgReadyPath -Wait -PassThru 
+        $exitCode = $pgReady.ExitCode 
+        if ($exitCode -ne 0) { 
+            Write-Host "PostgreSQL is not ready. Exit code: $exitCode" 
+            exit $exitCode 
+        } # Add PostgreSQL environment variables 
+        [Environment]::SetEnvironmentVariable("PGBIN", $pgBin, "Machine") 
+        [Environment]::SetEnvironmentVariable("PGROOT", $pgRoot, "Machine") 
+        [Environment]::SetEnvironmentVariable("PGDATA", $pgData, "Machine") 
+        # Stop and disable PostgreSQL service 
+        $pgService = Get-Service -Name postgresql* 
+        Stop-Service $pgService 
+        $pgService | Set-Service -StartupType Disabled 
+        Invoke-PesterTests -TestFile "Databases" -TestName "PostgreSQL" 
+    } else { 
+        Write-Host "Unexpected format in pgPath: $pgPath" 
+        exit 1 } 
+    } else { 
+        Write-Host "pgPath is null or empty" exit 1 
+    }
