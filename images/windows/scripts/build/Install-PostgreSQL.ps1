@@ -71,10 +71,7 @@ Install-Binary `
 
 # Get Path to pg_ctl.exe
 $pgService = Get-CimInstance -ClassName Win32_Service -Filter "Name LIKE 'postgresql-%'" 
-if ($pgService -eq $null) { 
-    Write-Host "PostgreSQL service not found. Exiting." 
-    exit 1 
-} 
+
 $pgPath = $pgService.PathName 
 # Display the retrieved path 
 Write-Host "PostgreSQL service path: $pgPath" 
