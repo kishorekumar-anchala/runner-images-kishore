@@ -67,7 +67,7 @@ Install-Binary `
     -ExpectedSignature (Get-ToolsetContent).postgresql.signature
 
 # Get Path to pg_ctl.exe
-$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'").PathName
+$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql%'")[0].PathName
 
 # Parse output of command above to obtain pure path
 $pgBin = Split-Path -Path $pgPath.split('"')[1]
