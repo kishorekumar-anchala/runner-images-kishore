@@ -61,14 +61,16 @@ if ($null -ne ($toolsetVersion | Select-String -Pattern '\d+\.\d+\.\d+')) {
 
 # Return the previous value of ErrorAction and invoke Install-Binary function
 $ErrorActionPreference = $errorActionOldValue
+$DownloadPath = "${env:TEMP_DIR}\postgresql-${toolsetVersion}-$targetMinorVersions-windows-x64.exe"
 $installerArgs = @("--install_runtimes 1", "--superpassword root", "--enable_acledit 1", "--unattendedmodeui none", "--mode unattended", "/norestart")
 Install-Binary `
     -Url $installerUrl `
     -InstallArgs $installerArgs `
-    -ExpectedSignature (Get-ToolsetContent).postgresql.signature
+    -ExpectedSignature (Get-ToolsetContent).postgresql.signature `
+    -DownloadPath $DownloadPath
 
 # Get Path to pg_ctl.exe
-$pgService = Get-Service -Name "postgresql-x64-*" -ErrorAction SilentlyContinue 
+$pgService = Get-CimInstance -ClassName Win32_Service -Filter "Name LIKE 'postgresql-%'" 
 if ($pgService -eq $null) { 
     Write-Host "PostgreSQL service not found. Exiting." 
     exit 1 
