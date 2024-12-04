@@ -7,6 +7,19 @@
 $pgUser = "postgres"
 $pgPwd = "root"
 
+# Clean previous PostgreSQL installation
+Stop-Service -Name "postgresql*" -ErrorAction SilentlyContinue
+Get-Service -Name "postgresql*" -ErrorAction SilentlyContinue | Set-Service -StartupType Disabled
+$pathsToRemove = @(
+    "C:\Program Files\PostgreSQL",
+    "C:\PostgreSQL",
+    "C:\Users\$env:USERNAME\AppData\Local\Temp\postgresql_installer*",
+    "HKLM:\SOFTWARE\PostgreSQL\"
+)
+foreach ($path in $pathsToRemove) {
+    Remove-Item -Recurse -Force $path -ErrorAction SilentlyContinue
+}
+
 # Prepare environment variable for validation
 [Environment]::SetEnvironmentVariable("PGUSER", $pgUser, "Machine")
 [Environment]::SetEnvironmentVariable("PGPASSWORD", $pgPwd, "Machine")
@@ -67,12 +80,19 @@ Install-Binary `
     -ExpectedSignature (Get-ToolsetContent).postgresql.signature
 
 # Get Path to pg_ctl.exe
-$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql%'")[0].PathName
+$pgPath = (Get-CimInstance Win32_Service -Filter "Name LIKE 'postgresql-%'")[0].PathName
 
 # Parse output of command above to obtain pure path
 $pgBin = Split-Path -Path $pgPath.split('"')[1]
 $pgRoot = Split-Path -Path $pgPath.split('"')[5]
 $pgData = Join-Path $pgRoot "data"
+
+# Initialize data directory if not already initialized
+if (-Not (Test-Path (Join-Path $pgData "postgresql.conf"))) {
+    Write-Host "Initializing PostgreSQL data directory..."
+    $initDbPath = Join-Path $pgBin "initdb.exe"
+    & $initDbPath -D $pgData -U $pgUser -W $pgPwd
+}
 
 # Validate PostgreSQL installation
 $pgReadyPath = Join-Path $pgBin "pg_isready.exe"
