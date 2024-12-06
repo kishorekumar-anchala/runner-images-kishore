@@ -1,30 +1,76 @@
-name: C++ Compile and Run with thread_local
+name: C++ thread_local Test with MinGW
 
 on:
   push:
 
+
 jobs:
   build:
-    runs-on: windows-2019
-    steps:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, windows-2019]  # You can add more OS types if needed.
+    defaults:
+      run:
+        shell: bash  # Using bash shell for both Ubuntu and Windows runners
 
-      # Step 1: Checkout the code
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # # Step 2: Set up MinGW (GCC compiler) or Visual Studio build tools
-      # - name: Install MinGW (GCC) via Chocolatey
+      # - name: Set up MinGW on Windows (if running on Windows)
+      #   if: runner.os == 'Windows'
       #   run: |
-      #     choco install mingw --version 8.1.0.4 -y
-      #     echo "MinGW installation complete."
+      #     # Install MinGW-w64 on Windows (if not pre-installed by default)
+      #     choco install mingw -y
+      #     echo "MinGW-w64 installation complete."
 
-      # Step 3: Compile the C++ code
-      - name: Compile C++ code with MinGW
+      - name: Ensure correct MinGW version is used
         run: |
-          g++ -std=c++11 -o main.exe main.cpp
-          echo "Compilation complete."
+          # Let's inspect the PATH and the versions of c++ and gcc
+          echo "PATH: $PATH"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            # On Windows, MinGW is typically installed in /c/mingw64/bin
+            echo "MinGW Version on Windows:"
+            /c/mingw64/bin/g++ --version
+          else
+            # On Ubuntu, confirm the version of g++ installed (typically g++-10 or similar)
+            echo "MinGW Version on Ubuntu:"
+            g++ --version
+          fi
 
-      # Step 4: Run the compiled executable
+      - name: Set MinGW-w64 on Windows correctly (ensure right order in PATH)
+        if: runner.os == 'Windows'
+        run: |
+          # Adjust PATH order to ensure /c/mingw64/bin is used before /mingw64/bin
+          echo "Adjusting PATH for MinGW on Windows"
+          export PATH="/c/mingw64/bin:$PATH"
+          echo "Adjusted PATH: $PATH"
+          # Verify that MinGW is being used correctly
+          /c/mingw64/bin/g++ --version
+
+      - name: Compile C++ code
+        run: |
+          # Create a simple C++ file with a thread_local variable
+          echo "#include <iostream>" > main.cpp
+          echo "#include <thread>" >> main.cpp
+          echo "thread_local int x = 5;" >> main.cpp
+          echo "void printThreadLocal() { std::cout << \"Thread-local variable x = \" << x << std::endl; }" >> main.cpp
+          echo "int main() { std::cout << \"Main thread\" << std::endl; printThreadLocal(); std::thread t1(printThreadLocal); std::thread t2(printThreadLocal); t1.join(); t2.join(); return 0; }" >> main.cpp
+
+          # Compile the C++ code using g++
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            # On Windows, we are using the MinGW-w64 from /c/mingw64/bin
+            /c/mingw64/bin/g++ -std=c++11 -o main.exe main.cpp
+          else
+            # On Ubuntu, g++ is typically already in the PATH
+            g++ -std=c++11 -o main main.cpp
+          fi
+
       - name: Run the executable
         run: |
-          ./main.exe
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            ./main.exe
+          else
+            ./main
+          fi
