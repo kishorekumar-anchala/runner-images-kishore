@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2019]  # You can add more OS types if needed.
+        os: [windows-2019,windows-latest]  # You can add more OS types if needed.
     defaults:
       run:
         shell: bash  # Using bash shell for both Ubuntu and Windows runners
