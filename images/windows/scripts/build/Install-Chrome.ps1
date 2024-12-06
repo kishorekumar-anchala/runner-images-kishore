@@ -5,7 +5,7 @@
 
 # Download and install latest Chrome browser
 Install-Binary `
-    -Url 'https://dl.google.com/chrome/install/googlechromestandaloneenterprise64.msi' `
+    -Url 'https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi' `
     -ExpectedSignature '607A3EDAA64933E94422FC8F0C80388E0590986C'
 
 # Prepare firewall rules
