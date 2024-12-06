@@ -346,6 +346,7 @@ build {
   provisioner "powershell" {
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     scripts          = [
+      "${path.root}/../scripts/build/Install-Chrome.ps1",
       "${path.root}/../scripts/build/Install-ActionsCache.ps1",
       "${path.root}/../scripts/build/Install-Ruby.ps1",
       "${path.root}/../scripts/build/Install-PyPy.ps1",
@@ -360,7 +361,6 @@ build {
       "${path.root}/../scripts/build/Install-PHP.ps1",
       "${path.root}/../scripts/build/Install-Rust.ps1",
       "${path.root}/../scripts/build/Install-Sbt.ps1",
-      "${path.root}/../scripts/build/Install-Chrome.ps1",
       "${path.root}/../scripts/build/Install-EdgeDriver.ps1",
       "${path.root}/../scripts/build/Install-Firefox.ps1",
       "${path.root}/../scripts/build/Install-Selenium.ps1",
