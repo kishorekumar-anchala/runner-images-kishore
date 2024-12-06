@@ -1,0 +1,35 @@
+name: C++ Compile and Run with thread_local
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up MinGW (GCC compiler) or Visual Studio build tools
+      - name: Install MinGW (GCC) via Chocolatey
+        run: |
+          choco install mingw --version 8.1.0.4 -y
+          echo "MinGW installation complete."
+
+      # Step 3: Compile the C++ code
+      - name: Compile C++ code with MinGW
+        run: |
+          g++ -std=c++11 -o main.exe main.cpp
+          echo "Compilation complete."
+
+      # Step 4: Run the compiled executable
+      - name: Run the executable
+        run: |
+          ./main.exe
