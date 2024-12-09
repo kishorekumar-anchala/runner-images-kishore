@@ -1,48 +1,27 @@
-name: Check Bindgen Installation
+name: Check Bindgen Version
 
 on:
+  # Trigger this workflow on push to the main branch or manually
   push:
     branches:
       - rust-check
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
-  check-bindgen:
-    runs-on: ubuntu-latest
+  check_bindgen_version:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      # Step 1: Set up Rust
+      - name: Set up Rust
+        uses: actions/setup-rust@v1  # Correct action version (v1)
 
-    - name: Set up Rust
-      uses: rust-lang/setup-rust@v1
-      with:
-        rust-version: stable
+      # Step 2: Install bindgen-cli using cargo
+      - name: Install bindgen
+        run: |
+          cargo install bindgen-cli  # Install bindgen-cli
 
-    - name: Verify Bindgen Installation
-      run: |
-        # Install bindgen if not already installed
-        if ! command -v bindgen &> /dev/null; then
-          echo "bindgen not found, installing it..."
-          cargo install bindgen
-        else
-          echo "bindgen is already installed"
-        fi
-
-    - name: Check Bindgen Version
-      run: |
-        echo "Checking bindgen version..."
-        bindgen --version
-        if [ $? -ne 0 ]; then
-          echo "bindgen failed to run with an error. Please check your setup."
-          exit 1
-        fi
-
-    - name: Update Bindgen (optional)
-      run: |
-        echo "Updating bindgen to the latest version..."
-        cargo install --force bindgen
-
-    - name: Run Tests
-      run: |
-        # Add your test commands here, for example:
-        cargo test
+      # Step 3: Check bindgen version
+      - name: Check Bindgen Version
+        run: |
+          bindgen --version  # Print the installed version of bindgen
