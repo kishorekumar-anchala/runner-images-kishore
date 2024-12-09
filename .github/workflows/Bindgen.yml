@@ -1,0 +1,47 @@
+name: Check Bindgen Installation
+
+on:
+  push:
+    branches:
+      - rust-check
+jobs:
+  check-bindgen:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: stable
+
+    - name: Verify Bindgen Installation
+      run: |
+        # Install bindgen if not already installed
+        if ! command -v bindgen &> /dev/null; then
+          echo "bindgen not found, installing it..."
+          cargo install bindgen
+        else
+          echo "bindgen is already installed"
+        fi
+
+    - name: Check Bindgen Version
+      run: |
+        echo "Checking bindgen version..."
+        bindgen --version
+        if [ $? -ne 0 ]; then
+          echo "bindgen failed to run with an error. Please check your setup."
+          exit 1
+        fi
+
+    - name: Update Bindgen (optional)
+      run: |
+        echo "Updating bindgen to the latest version..."
+        cargo install --force bindgen
+
+    - name: Run Tests
+      run: |
+        # Add your test commands here, for example:
+        cargo test
