@@ -17,7 +17,7 @@ jobs:
 
       - name: Install bindgen
         run: |
-          cargo install bindgen
+          cargo install bindgen-cli
 
       - name: Check bindgen version
         run: |
