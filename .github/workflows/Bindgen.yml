@@ -4,16 +4,17 @@ on:
   push:
     branches:
       - rust-check
+
 jobs:
   check-bindgen:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Rust
-      uses: actions/setup-rust@v2
+      uses: rust-lang/setup-rust@v1
       with:
         rust-version: stable
 
