@@ -14,7 +14,7 @@ jobs:
     steps:
       # Step 1: Set up Rust
       - name: Set up Rust
-        uses: rust-lang/setup-rust@v1  # Correct action version (v1)
+        uses: actions/setup-rust@v1  # Correct action version (v1)
 
       # Step 2: Install bindgen-cli using cargo
       - name: Install bindgen
