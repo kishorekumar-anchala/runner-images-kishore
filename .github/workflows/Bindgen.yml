@@ -21,4 +21,4 @@ jobs:
 
       - name: Check bindgen version
         run: |
-          bindgen --help
+          bindgen-cli --version
