@@ -1,16 +1,15 @@
-name: Example Workflow
+name: Install and Cleanup Node.js
 
 on:
   push:
 
 permissions:
   contents: read
-  # Update permissions if the package uninstallation requires additional write access
-  # e.g., "contents: write" could be necessary for certain steps
+  # Update permissions if necessary for more actions, e.g., "contents: write"
 
 jobs:
-  example_job:
-    name: Example Job
+  install_and_cleanup_node:
+    name: Install and Cleanup Node.js
     runs-on: windows-latest
 
     defaults:
@@ -21,9 +20,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Node.js (version 16)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Replace with the desired Node.js version
+
+      - name: Verify Node.js Installation
+        run: |
+          node --version
+          npm --version
+
       - name: Verify installed packages
         run: |
-          Get-Package
+          Get-Package | Where-Object { $_.Name -match "^Node" }
 
       - name: Cleanup Node.js (if installed)
         run: |
@@ -35,7 +44,6 @@ jobs:
             Write-Host "No Node.js package found."
           }
 
-      # Optional: You can add steps to check the environment after the uninstallation.
       - name: Verify Node.js uninstallation
         run: |
           $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
