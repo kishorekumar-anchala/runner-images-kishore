@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: pwsh # This defaults to PowerShell 5. `pwsh` goes to 7.
+        shell: powershell # This defaults to PowerShell 5. `pwsh` goes to 7.
 
     steps:
       - name: Checkout
