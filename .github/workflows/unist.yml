@@ -1,22 +1,46 @@
 name: Example Workflow
+
 on:
-    push:
+  push:
 
 permissions:
   contents: read
+  # Update permissions if the package uninstallation requires additional write access
+  # e.g., "contents: write" could be necessary for certain steps
 
 jobs:
   example_job:
     name: Example Job
     runs-on: windows-latest
+
     defaults:
       run:
-        shell: powershell # This defaults to PowerShell 5. `pwsh` goes to 7.
+        shell: pwsh # Use PowerShell 7 explicitly
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Cleanup Node
+      - name: Verify installed packages
         run: |
-          Get-Package | Where Name -Match "^Node" | Uninstall-Package
+          Get-Package
+
+      - name: Cleanup Node.js (if installed)
+        run: |
+          $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
+          if ($nodePackage) {
+            Write-Host "Node.js found. Proceeding with uninstallation."
+            Uninstall-Package -Name $nodePackage.Name -Force
+          } else {
+            Write-Host "No Node.js package found."
+          }
+
+      # Optional: You can add steps to check the environment after the uninstallation.
+      - name: Verify Node.js uninstallation
+        run: |
+          $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
+          if ($nodePackage) {
+            Write-Host "Node.js is still installed."
+          } else {
+            Write-Host "Node.js successfully uninstalled."
+          }
