@@ -50,12 +50,26 @@ jobs:
 
       - name: Cleanup Node.js (if installed)
         run: |
-          $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
-          if ($nodePackage) {
-            Write-Host "Node.js found. Proceeding with uninstallation."
-            Uninstall-Package -Name $nodePackage.Name -Force
-          } else {
-            Write-Host "No Node.js package found to uninstall."
+          # Ensure that the Node.js installation is removed, including leftovers
+          $nodePath = "$env:ProgramFiles\nodejs\node.exe"
+          $npmPath = "$env:APPDATA\npm"
+          $npmCachePath = "$env:APPDATA\npm-cache"
+
+          # Remove Node.js files and directories
+          if (Test-Path $nodePath) {
+            Write-Host "Removing Node.js from $nodePath"
+            Remove-Item -Recurse -Force "C:\Program Files\nodejs"
+          }
+          
+          # Clean npm cache and other related directories
+          if (Test-Path $npmPath) {
+            Write-Host "Removing npm files from $npmPath"
+            Remove-Item -Recurse -Force $npmPath
+          }
+
+          if (Test-Path $npmCachePath) {
+            Write-Host "Removing npm cache from $npmCachePath"
+            Remove-Item -Recurse -Force $npmCachePath
           }
 
       - name: Verify Node.js Uninstallation
