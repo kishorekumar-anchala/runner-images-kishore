@@ -27,12 +27,23 @@ jobs:
 
       - name: Verify Node.js Installation
         run: |
-          node --version
-          npm --version
+          if (Test-Path "$env:ProgramFiles\nodejs\node.exe") {
+            Write-Host "Node.js successfully installed."
+            node --version
+            npm --version
+          } else {
+            Write-Host "Node.js installation failed."
+            exit 1
+          }
 
       - name: Verify installed packages
         run: |
-          Get-Package | Where-Object { $_.Name -match "^Node" }
+          $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
+          if ($nodePackage) {
+            Write-Host "Node.js package is installed: $($nodePackage.Name)"
+          } else {
+            Write-Host "No Node.js package found."
+          }
 
       - name: Cleanup Node.js (if installed)
         run: |
@@ -41,14 +52,15 @@ jobs:
             Write-Host "Node.js found. Proceeding with uninstallation."
             Uninstall-Package -Name $nodePackage.Name -Force
           } else {
-            Write-Host "No Node.js package found."
+            Write-Host "No Node.js package found to uninstall."
           }
 
-      - name: Verify Node.js uninstallation
+      - name: Verify Node.js Uninstallation
         run: |
           $nodePackage = Get-Package | Where-Object { $_.Name -match "^Node" }
           if ($nodePackage) {
             Write-Host "Node.js is still installed."
+            exit 1  # Fail the job if Node.js is still installed
           } else {
             Write-Host "Node.js successfully uninstalled."
           }
