@@ -1,0 +1,22 @@
+name: Example Workflow
+on:
+    push:
+
+permissions:
+  contents: read
+
+jobs:
+  example_job:
+    name: Example Job
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: powershell # This defaults to PowerShell 5. `pwsh` goes to 7.
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cleanup Node
+        run: |
+          Get-Package | Where Name -Match "^Node" | Uninstall-Package
