@@ -1,9 +1,6 @@
 name: Example Workflow
 on:
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  push:
 
 permissions:
   contents: read
