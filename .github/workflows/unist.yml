@@ -1,84 +1,25 @@
-name: Install and Cleanup Node.js
-
+name: Example Workflow
 on:
-  push:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
-  # Update permissions if necessary for more actions, e.g., "contents: write"
 
 jobs:
-  install_and_cleanup_node:
-    name: Install and Cleanup Node.js
+  example_job:
+    name: Example Job
     runs-on: windows-latest
-
     defaults:
       run:
-        shell: pwsh # Use PowerShell 7 explicitly
+        shell: pwsh # This defaults to PowerShell 5. `pwsh` goes to 7.
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node.js (version 16)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16' # Replace with the desired Node.js version
-
-      - name: Verify Node.js Installation
+      - name: Cleanup Node
         run: |
-          $nodePath = "$env:ProgramFiles\nodejs\node.exe"
-          if (Test-Path $nodePath) {
-            Write-Host "Node.js successfully installed."
-            node --version
-            npm --version
-          } else {
-            Write-Host "Node.js installation failed."
-            exit 1
-          }
-
-      - name: Verify installed packages
-        run: |
-          # Check if Node.js is installed via expected paths
-          $nodePath = "$env:ProgramFiles\nodejs\node.exe"
-          if (Test-Path $nodePath) {
-            Write-Host "Node.js is installed at: $nodePath"
-          } else {
-            Write-Host "Node.js is not found."
-            exit 1
-          }
-
-      - name: Cleanup Node.js (if installed)
-        run: |
-          # Ensure that the Node.js installation is removed, including leftovers
-          $nodePath = "$env:ProgramFiles\nodejs\node.exe"
-          $npmPath = "$env:APPDATA\npm"
-          $npmCachePath = "$env:APPDATA\npm-cache"
-
-          # Remove Node.js files and directories
-          if (Test-Path $nodePath) {
-            Write-Host "Removing Node.js from $nodePath"
-            Remove-Item -Recurse -Force "C:\Program Files\nodejs"
-          }
-          
-          # Clean npm cache and other related directories
-          if (Test-Path $npmPath) {
-            Write-Host "Removing npm files from $npmPath"
-            Remove-Item -Recurse -Force $npmPath
-          }
-
-          if (Test-Path $npmCachePath) {
-            Write-Host "Removing npm cache from $npmCachePath"
-            Remove-Item -Recurse -Force $npmCachePath
-          }
-
-      - name: Verify Node.js Uninstallation
-        run: |
-          # After uninstallation, verify if Node.js is still installed
-          $nodePath = "$env:ProgramFiles\nodejs\node.exe"
-          if (Test-Path $nodePath) {
-            Write-Host "Node.js is still installed."
-            exit 1  # Fail the job if Node.js is still installed
-          } else {
-            Write-Host "Node.js successfully uninstalled."
-          }
+          Get-Package | Where Name -Match "^Node" | Uninstall-Package
