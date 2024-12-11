@@ -8,12 +8,12 @@
 source $HELPER_SCRIPTS/etc-environment.sh
 
 # Set the Azure configuration directory to a user-owned path
-export AZURE_CONFIG_DIR="$HOME/.azure"
+export AZURE_CONFIG_DIR="/home/$(whoami)/.azure"
 mkdir -p $AZURE_CONFIG_DIR
 #chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
-export AZURE_EXTENSION_DIR="$HOME/.azure-extensions"
+export AZURE_EXTENSION_DIR="/home/$(whoami)/.azure-extensions"
 mkdir -p $AZURE_EXTENSION_DIR
 #chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
