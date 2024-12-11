@@ -12,9 +12,9 @@ export AZURE_CONFIG_DIR="/opt/az-config"
 
 if [ ! -d "$AZURE_CONFIG_DIR" ]; then
 
-    sudo mkdir -p $AZURE_CONFIG_DIR
+    mkdir -p $AZURE_CONFIG_DIR
 
-    sudo chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
+    chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
 
 fi
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
@@ -22,9 +22,9 @@ set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 export AZURE_EXTENSION_DIR="/opt/az-extensions"
 if [ ! -d "$AZURE_EXTENSION_DIR" ]; then
 
-    sudo mkdir -p $AZURE_EXTENSION_DIR
+    mkdir -p $AZURE_EXTENSION_DIR
 
-    sudo chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
+    chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
 
 fi
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
