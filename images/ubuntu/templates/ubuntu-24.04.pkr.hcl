@@ -274,11 +274,11 @@ provisioner "shell" {
     environment_vars = ["HELPER_SCRIPTS=${var.helper_script_folder}", "INSTALLER_SCRIPT_FOLDER=${var.installer_script_folder}", "DEBIAN_FRONTEND=noninteractive"]
     execute_command  = "sudo sh -c '{{ .Vars }} {{ .Path }}'"
     scripts          = [
-      "${path.root}/../scripts/build/install-azure-cli.sh",
       "${path.root}/../scripts/build/install-actions-cache.sh",
       "${path.root}/../scripts/build/install-runner-package.sh",
       "${path.root}/../scripts/build/install-apt-common.sh",
       "${path.root}/../scripts/build/install-azcopy.sh",
+      "${path.root}/../scripts/build/install-azure-cli.sh",
       "${path.root}/../scripts/build/install-azure-devops-cli.sh",
       "${path.root}/../scripts/build/install-bicep.sh",
       "${path.root}/../scripts/build/install-apache.sh",

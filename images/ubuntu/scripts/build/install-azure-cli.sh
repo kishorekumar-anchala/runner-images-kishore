@@ -7,26 +7,15 @@
 # Source the helpers for use with the script
 source $HELPER_SCRIPTS/etc-environment.sh
 
-export AZURE_CONFIG_DIR="/opt/az-config"
-# Create directories if they do not exist
-
-if [ ! -d "$AZURE_CONFIG_DIR" ]; then
-
-    mkdir -p $AZURE_CONFIG_DIR
-
-    chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
-
-fi
+# Set the Azure configuration directory to a user-owned path
+export AZURE_CONFIG_DIR="$HOME/.azure"
+mkdir -p $AZURE_CONFIG_DIR
+chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
-export AZURE_EXTENSION_DIR="/opt/az-extensions"
-if [ ! -d "$AZURE_EXTENSION_DIR" ]; then
-
-    mkdir -p $AZURE_EXTENSION_DIR
-
-    chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
-
-fi
+export AZURE_EXTENSION_DIR="$HOME/.azure-extensions"
+mkdir -p $AZURE_EXTENSION_DIR
+chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
 
 # Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
