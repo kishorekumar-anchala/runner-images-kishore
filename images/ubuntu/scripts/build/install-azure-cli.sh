@@ -8,11 +8,25 @@
 source $HELPER_SCRIPTS/etc-environment.sh
 
 export AZURE_CONFIG_DIR="/opt/az-config"
-mkdir -p $AZURE_CONFIG_DIR
+# Create directories if they do not exist
+
+if [ ! -d "$AZURE_CONFIG_DIR" ]; then
+
+    sudo mkdir -p $AZURE_CONFIG_DIR
+
+    sudo chown -R $(whoami):$(whoami) $AZURE_CONFIG_DIR
+
+fi
 set_etc_environment_variable "AZURE_CONFIG_DIR" $AZURE_CONFIG_DIR
 
 export AZURE_EXTENSION_DIR="/opt/az-extensions"
-mkdir -p $AZURE_EXTENSION_DIR
+if [ ! -d "$AZURE_EXTENSION_DIR" ]; then
+
+    sudo mkdir -p $AZURE_EXTENSION_DIR
+
+    sudo chown -R $(whoami):$(whoami) $AZURE_EXTENSION_DIR
+
+fi
 set_etc_environment_variable "AZURE_EXTENSION_DIR" $AZURE_EXTENSION_DIR
 
 # Install Azure CLI (instructions taken from https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
