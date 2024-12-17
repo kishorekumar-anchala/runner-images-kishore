@@ -10,9 +10,21 @@ source $HELPER_SCRIPTS/install.sh
 source_list=/etc/apt/sources.list.d/eslerlang.list
 source_key=/usr/share/keyrings/eslerlang.gpg
 
-# Install Erlang
-wget -q -O - https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | gpg --dearmor > $source_key
-echo "deb [signed-by=$source_key]  https://packages.erlang-solutions.com/ubuntu $(lsb_release -cs) contrib" > $source_list
+echo "Downloading Erlang GPG key..."
+
+wget -q -O /tmp/erlang_solutions.asc https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+
+
+
+echo "Converting GPG key..."
+
+gpg --dearmor /tmp/erlang_solutions.asc > $source_key
+
+
+
+echo "Adding repository..."
+
+echo "deb [signed-by=$source_key] https://packages.erlang-solutions.com/ubuntu $(lsb_release -cs) contrib" > $source_list
 apt-get update
 
 apt-get install --no-install-recommends esl-erlang
