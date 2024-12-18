@@ -11,31 +11,30 @@ source $HELPER_SCRIPTS/os.sh
 source_list=/etc/apt/sources.list.d/eslerlang.list
 source_key=/usr/share/keyrings/eslerlang.gpg
 
-# If Ubuntu 20.04, download Erlang manually
+# Check Ubuntu version
+
 if is_ubuntu20; then
 
-  ERLANG_PACKAGE="erlang_25.3-1~focal_amd64.deb"  # Change this based on version
-  ERLANG_URL="https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang/$ERLANG_PACKAGE"
+    # For Ubuntu 20.04, use the new source
 
-  # Download the package
-  wget -q $ERLANG_URL -O /tmp/$ERLANG_PACKAGE
+    wget -q -O - https://binaries2.erlang-solutions.com/GPG-KEY-pmanager.asc | gpg --dearmor > $source_key
 
-  # Install the package manually
-  dpkg -i /tmp/$ERLANG_PACKAGE
-  apt-get install -f -y
+    echo "deb [signed-by=$source_key]  http://binaries2.erlang-solutions.com/ubuntu $(lsb_release -cs)-esl-erlang-25 contrib" > $source_list
 
-  echo "Erlang installed successfully on Ubuntu 20.04"
 else
-  # If not Ubuntu 20.04, use the package manager as usual
-  # Default Repository URL for Erlang Solutions
-  REPO_URL="https://packages.erlang-solutions.com/ubuntu $(lsb_release -cs) contrib"
 
-  # Install Erlang
-  wget -q -O - https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | gpg --dearmor > $source_key
-  echo "deb [signed-by=$source_key] $REPO_URL" > $source_list
-  apt-get update
-  apt-get install --no-install-recommends esl-erlang
+    # For other versions, use the default source
+
+    wget -q -O - https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | gpg --dearmor > $source_key
+
+    echo "deb [signed-by=$source_key]  https://packages.erlang-solutions.com/ubuntu $(lsb_release -cs) contrib" > $source_list
+
 fi
+apt-get update
+
+# install Erlang
+
+apt-get install --no-install-recommends esl-erlang
 
 # Install rebar3
 rebar3_url=$(resolve_github_release_asset_url "erlang/rebar3" "endswith(\"rebar3\")" "latest")
