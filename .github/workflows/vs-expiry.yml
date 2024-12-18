@@ -1,0 +1,18 @@
+name: Check Visual Studio Installation
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  check-visual-studio:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Check Visual Studio Installation
+      run: |
+        echo "Checking Visual Studio installation..."
+        "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all -products * -latest -format json
