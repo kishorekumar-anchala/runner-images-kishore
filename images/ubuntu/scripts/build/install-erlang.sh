@@ -14,7 +14,7 @@ source_key=/usr/share/keyrings/eslerlang.gpg
 # If Ubuntu 20.04, download Erlang manually
 if is_ubuntu20; then
 
-  ERLANG_PACKAGE="erlang_24.3.4-1~focal_amd64.deb"  # Change this based on version
+  ERLANG_PACKAGE="erlang_25.3-1~focal_amd64.deb"  # Change this based on version
   ERLANG_URL="https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang/$ERLANG_PACKAGE"
 
   # Download the package
