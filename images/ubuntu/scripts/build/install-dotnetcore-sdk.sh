@@ -60,9 +60,7 @@ for version in ${dotnet_versions[@]}; do
     release_url="https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${version}/releases.json"
     releases=$(cat "$(download_with_retry "$release_url")")
     
-    if [[ $version == "9.0" ]]; then
-        sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdk.version | select(contains("preview") or contains("rc") | not)'))
-    elif [[ $version == "6.0" || $version == "8.0" ]]; then
+    if [[ $version == "6.0" || $version == "8.0" ]]; then
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r 'first(.releases[].sdks[]?.version | select(contains("preview") or contains("rc") | not))'))
     else
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdk.version | select(contains("preview") or contains("rc") | not)'))
