@@ -187,7 +187,7 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
-  use_oidc_auth                          = "true"
+
 
   dynamic "azure_tag" {
     for_each = var.azure_tags
