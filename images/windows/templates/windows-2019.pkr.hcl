@@ -2,7 +2,7 @@ packer {
   required_plugins {
     azure = {
       source  = "github.com/hashicorp/azure"
-      version = "1.4.5"
+      version = "2.2.0"
     }
   }
 }
@@ -181,6 +181,7 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
+  use_oidc_auth                          = "true"
 
   dynamic "azure_tag" {
     for_each = var.azure_tags

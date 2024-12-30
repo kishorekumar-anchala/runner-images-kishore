@@ -2,7 +2,7 @@ packer {
   required_plugins {
     azure = {
       source  = "github.com/hashicorp/azure"
-      version = "1.4.5"
+      version = "2.2.0"
     }
   }
 }
@@ -165,6 +165,7 @@ source "azure-arm" "build_image" {
   virtual_network_resource_group_name    = "${var.virtual_network_resource_group_name}"
   virtual_network_subnet_name            = "${var.virtual_network_subnet_name}"
   vm_size                                = "${var.vm_size}"
+  use_oidc_auth                          = "true"
 
   dynamic "azure_tag" {
     for_each = var.azure_tags
