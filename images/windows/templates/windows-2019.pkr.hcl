@@ -138,6 +138,11 @@ variable "virtual_network_name" {
   default = "${env("VNET_NAME")}"
 }
 
+variable "use_azure_cli_auth" {
+  type    = bool
+  default = false
+}
+
 variable "virtual_network_resource_group_name" {
   type    = string
   default = "${env("VNET_RESOURCE_GROUP")}"
@@ -174,6 +179,7 @@ source "azure-arm" "image" {
   subscription_id                        = "${var.subscription_id}"
   temp_resource_group_name               = "${var.temp_resource_group_name}"
   tenant_id                              = "${var.tenant_id}"
+  use_azure_cli_auth                     = "${var.use_azure_cli_auth}"
   virtual_network_name                   = "${var.virtual_network_name}"
   virtual_network_resource_group_name    = "${var.virtual_network_resource_group_name}"
   virtual_network_subnet_name            = "${var.virtual_network_subnet_name}"
@@ -181,7 +187,6 @@ source "azure-arm" "image" {
   winrm_insecure                         = "true"
   winrm_use_ssl                          = "true"
   winrm_username                         = "packer"
-  use_oidc_auth                          = "true"
 
   dynamic "azure_tag" {
     for_each = var.azure_tags

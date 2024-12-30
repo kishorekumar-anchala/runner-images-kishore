@@ -113,6 +113,13 @@ Function GenerateResourcesAndImage {
                 cleanup - attempt to cleanup and then abort
                 run-cleanup-provisioner - run the cleanup provisioner and then abort
             The default is 'ask'.
+        .PARAMETER UseAzureCliAuth
+            If set, switches to use Azure CLI authentication for Packer. Defaults to false. 
+            CLI auth will use the information from an active az login session to connect to Azure and set the subscription id and tenant id associated to the signed in account. 
+            If enabled, it will use the authentication provided by the az CLI. 
+            Azure CLI authentication will use the credential marked as isDefault and can be verified using az account show. 
+            Works with normal authentication (az login) and service principals (az login --service-principal --username APP_ID --password PASSWORD --tenant TENANT_ID). 
+            Ignores all other configurations if enabled.
         .PARAMETER Tags
             Tags to be applied to the Azure resources created.
         .EXAMPLE
@@ -148,6 +155,8 @@ Function GenerateResourcesAndImage {
         [Parameter(Mandatory = $False)]
         [ValidateSet("abort", "ask", "cleanup", "run-cleanup-provisioner")]
         [string] $OnError = "ask",
+        [Parameter(Mandatory = $False)]
+        [switch] $UseAzureCliAuth,
         [Parameter(Mandatory = $False)]
         [hashtable] $Tags = @{}
     )
@@ -231,6 +240,7 @@ Function GenerateResourcesAndImage {
         "-var=managed_image_resource_group_name=$($ResourceGroupName)" `
         "-var=install_password=$($InstallPassword)" `
         "-var=allowed_inbound_ip_addresses=$($AllowedInboundIpAddresses)" `
+        var=use_azure_cli_auth=$($UseAzureCliAuth.ToString().ToLower())" `
         "-var=azure_tags=$($TagsJson)" `
         $TemplatePath
 
@@ -328,7 +338,7 @@ Function GenerateResourcesAndImage {
         }
 
         # Create service principal
-        if ([string]::IsNullOrEmpty($AzureClientId)) {
+        if ([string]::IsNullOrEmpty($AzureClientId) -and $UseAzureCliAuth -ne $True) {
             Write-Host "Creating service principal for packer..."
             $ADCleanupRequired = $true
 
@@ -364,6 +374,7 @@ Function GenerateResourcesAndImage {
             -var "managed_image_resource_group_name=$($ResourceGroupName)" `
             -var "install_password=$($InstallPassword)" `
             -var "allowed_inbound_ip_addresses=$($AllowedInboundIpAddresses)" `
+            -var "use_azure_cli_auth=$($UseAzureCliAuth.ToString().ToLower())" `
             -var "azure_tags=$($TagsJson)" `
             $TemplatePath
 
