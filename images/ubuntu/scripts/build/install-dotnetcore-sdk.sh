@@ -32,10 +32,6 @@ dotnet_tools=$(get_toolset_value '.dotnet.tools[].name')
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 # Install .NET SDK from apt
-# There is a versions conflict, that leads to
-# Microsoft <-> Canonical repos dependencies mix up.
-# Give Microsoft's repo higher priority to avoid collisions.
-# See: https://github.com/dotnet/core/issues/7699
 cat << EOF > /etc/apt/preferences.d/dotnet
 Package: *net*
 Pin: origin packages.microsoft.com
@@ -59,12 +55,14 @@ rm /etc/apt/preferences.d/dotnet
 apt-get update
 
 # Install .NET SDK from home repository
-# Get list of all released SDKs from channels which are not end-of-life or preview
 sdks=()
 for version in ${dotnet_versions[@]}; do
     release_url="https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/${version}/releases.json"
     releases=$(cat "$(download_with_retry "$release_url")")
-    if [[ $version == "6.0" ]]; then
+    
+    if [[ $version == "9.0" ]]; then
+        sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdk.version | select(contains("preview") or contains("rc") | not)'))
+    elif [[ $version == "6.0" || $version == "8.0" ]]; then
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r 'first(.releases[].sdks[]?.version | select(contains("preview") or contains("rc") | not))'))
     else
         sdks=("${sdks[@]}" $(echo "${releases}" | jq -r '.releases[].sdk.version | select(contains("preview") or contains("rc") | not)'))
@@ -72,6 +70,7 @@ for version in ${dotnet_versions[@]}; do
     fi
 done
 
+# Now we handle SDK versions properly for all versions including 9.0
 sorted_sdks=$(echo ${sdks[@]} | tr ' ' '\n' | sort -r | uniq -w 5)
 
 # Download/install additional SDKs in parallel
@@ -84,8 +83,6 @@ parallel --jobs 0 --halt soon,fail=1 \
 
 find . -name "*.tar.gz" | parallel --halt soon,fail=1 'extract_dotnet_sdk {}'
 
-# NuGetFallbackFolder at /usr/share/dotnet/sdk/NuGetFallbackFolder is warmed up by smoke test
-# Additional FTE will just copy to ~/.dotnet/NuGet which provides no benefit on a fungible machine
 set_etc_environment_variable DOTNET_SKIP_FIRST_TIME_EXPERIENCE 1
 set_etc_environment_variable DOTNET_NOLOGO 1
 set_etc_environment_variable DOTNET_MULTILEVEL_LOOKUP 0
