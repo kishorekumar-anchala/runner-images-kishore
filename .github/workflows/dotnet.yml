@@ -2,7 +2,6 @@ name: Check Latest .NET SDK Version
 
 on:
   push:
-
   workflow_dispatch:
 
 jobs:
@@ -19,8 +18,8 @@ jobs:
     - name: Fetch .NET SDK versions
       id: fetch_versions
       run: |
-        # Fetch the .NET releases from the official JSON feed
-        releases=$(curl -s https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/latest.json)
+        # Fetch the .NET releases from the correct API URL
+        releases=$(curl -s https://api.github.com/repos/dotnet/core/blob/master/release-notes/versions.json)
 
         # Print the raw response to debug
         echo "Raw response:"
