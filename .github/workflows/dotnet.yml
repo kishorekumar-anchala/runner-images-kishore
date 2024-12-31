@@ -2,7 +2,7 @@ name: Check Latest .NET SDK Version
 
 on:
   push:
-  # Optionally, trigger manually
+
   workflow_dispatch:
 
 jobs:
@@ -16,11 +16,18 @@ jobs:
     - name: Set up jq (for JSON parsing)
       run: sudo apt-get install -y jq
 
-    - name: Get latest .NET SDK versions
+    - name: Fetch .NET SDK versions
       id: fetch_versions
       run: |
         # Fetch the .NET releases from the official JSON feed
         releases=$(curl -s https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/latest.json)
+
+        # Print the raw response to debug
+        echo "Raw response:"
+        echo "$releases"
+        
+        # Check if the response is valid JSON before processing
+        echo "$releases" | jq .  # This will throw an error if the response is invalid
 
         # Extract the SDK versions from the releases and filter out preview/rc versions
         stable_versions=$(echo "$releases" | jq -r '.releases[].sdks[]?.version | select(contains("preview") | not) | select(contains("rc") | not)')
