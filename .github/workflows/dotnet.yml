@@ -18,8 +18,8 @@ jobs:
     - name: Fetch .NET SDK releases from GitHub API
       id: fetch_versions
       run: |
-        # Fetch the .NET SDK releases from GitHub API
-        releases=$(curl -s https://api.github.com/repos/dotnet/core-sdk/releases)
+        # Fetch the .NET SDK releases from GitHub API and follow redirects
+        releases=$(curl -s -L https://api.github.com/repositories/104528436/releases)
 
         # Print the raw response to debug
         echo "Raw response:"
