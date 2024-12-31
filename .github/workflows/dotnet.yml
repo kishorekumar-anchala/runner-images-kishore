@@ -24,12 +24,23 @@ jobs:
         # Print the raw response to debug
         echo "Raw response:"
         echo "$releases"
-        
+
         # Check if the response is valid JSON before processing
         echo "$releases" | jq .  # This will throw an error if the response is invalid
 
-        # Extract the SDK versions and filter out preview/rc versions
-        stable_versions=$(echo "$releases" | jq -r '.[] | select(.tag_name | test("preview|rc") | not) | .tag_name')
+        # Extract all the SDK versions (tags) from the releases and display them
+        available_versions=$(echo "$releases" | jq -r '.[].tag_name')
+
+        # Print all available versions
+        echo "Available .NET SDK Versions:"
+        echo "$available_versions"
+
+        # Filter out preview/rc versions to get only stable versions
+        stable_versions=$(echo "$available_versions" | grep -v -E "preview|rc")
+
+        # Print stable versions
+        echo "Stable .NET SDK Versions:"
+        echo "$stable_versions"
 
         # Get the latest stable version
         latest_stable_version=$(echo "$stable_versions" | sort -V | tail -n 1)
