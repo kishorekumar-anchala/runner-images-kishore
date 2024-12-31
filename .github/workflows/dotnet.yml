@@ -1,0 +1,48 @@
+name: Check Latest .NET SDK Version
+
+on:
+  push:
+  # Optionally, trigger manually
+  workflow_dispatch:
+
+jobs:
+  check-dotnet-version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up jq (for JSON parsing)
+      run: sudo apt-get install -y jq
+
+    - name: Get latest .NET SDK versions
+      id: fetch_versions
+      run: |
+        # Fetch the .NET releases from the official JSON feed
+        releases=$(curl -s https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/latest.json)
+
+        # Extract the SDK versions from the releases and filter out preview/rc versions
+        stable_versions=$(echo "$releases" | jq -r '.releases[].sdks[]?.version | select(contains("preview") | not) | select(contains("rc") | not)')
+
+        # Get the latest stable version
+        latest_stable_version=$(echo "$stable_versions" | sort -V | tail -n 1)
+
+        # Output the latest stable version
+        echo "Latest Stable .NET SDK Version: $latest_stable_version"
+
+        # Output the latest stable version as an output variable for use in other steps
+        echo "::set-output name=latest_version::$latest_stable_version"
+
+    - name: Check if latest version is supported
+      run: |
+        # Define supported versions (you can replace this with a file or other logic)
+        supported_versions=("7.0" "6.0" "8.0" "9.0")
+        
+        # Check if the latest version is in the list of supported versions
+        if [[ " ${supported_versions[@]} " =~ " ${LATEST_VERSION} " ]]; then
+          echo "The latest version $LATEST_VERSION is supported."
+        else
+          echo "The latest version $LATEST_VERSION is NOT supported."
+          exit 1
+        fi
