@@ -15,11 +15,11 @@ jobs:
     - name: Set up jq (for JSON parsing)
       run: sudo apt-get install -y jq
 
-    - name: Fetch .NET SDK versions
+    - name: Fetch .NET SDK releases from GitHub API
       id: fetch_versions
       run: |
-        # Fetch the .NET releases from the correct API URL
-        releases=$(curl -s https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/latest.json)
+        # Fetch the .NET SDK releases from GitHub API
+        releases=$(curl -s https://api.github.com/repos/dotnet/core-sdk/releases)
 
         # Print the raw response to debug
         echo "Raw response:"
@@ -28,8 +28,8 @@ jobs:
         # Check if the response is valid JSON before processing
         echo "$releases" | jq .  # This will throw an error if the response is invalid
 
-        # Extract the SDK versions from the releases and filter out preview/rc versions
-        stable_versions=$(echo "$releases" | jq -r '.releases[].sdks[]?.version | select(contains("preview") | not) | select(contains("rc") | not)')
+        # Extract the SDK versions and filter out preview/rc versions
+        stable_versions=$(echo "$releases" | jq -r '.[] | select(.tag_name | test("preview|rc") | not) | .tag_name')
 
         # Get the latest stable version
         latest_stable_version=$(echo "$stable_versions" | sort -V | tail -n 1)
@@ -44,6 +44,9 @@ jobs:
       run: |
         # Define supported versions (you can replace this with a file or other logic)
         supported_versions=("7.0" "6.0" "8.0" "9.0")
+        
+        # Fetch the latest version from previous step
+        LATEST_VERSION="${{ steps.fetch_versions.outputs.latest_version }}"
         
         # Check if the latest version is in the list of supported versions
         if [[ " ${supported_versions[@]} " =~ " ${LATEST_VERSION} " ]]; then
