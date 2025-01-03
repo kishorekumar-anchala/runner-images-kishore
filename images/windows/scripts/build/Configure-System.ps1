@@ -3,32 +3,6 @@
 ##  Desc:  Applies various configuration settings to the final image
 ################################################################################
 
-# Set default version to 1 for WSL (aka LXSS - Linux Subsystem)
-# The value should be set in the default user registry hive
-# https://github.com/actions/runner-images/issues/5760
-if (Test-IsWin22) {
-    Write-Host "Setting WSL default version to 1"
-
-    Mount-RegistryHive `
-        -FileName "C:\Users\Default\NTUSER.DAT" `
-        -SubKey "HKLM\DEFAULT"
-
-    # Create the key if it doesn't exist
-    $keyPath = "DEFAULT\Software\Microsoft\Windows\CurrentVersion\Lxss"
-    if (-not (Test-Path $keyPath)) {
-        Write-Host "Creating $keyPath key"
-        New-Item -Path (Join-Path "HKLM:\" $keyPath) -Force | Out-Null
-    }
-
-    # Set the DefaultVersion value to 1
-    $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($keyPath, $true)
-    $key.SetValue("DefaultVersion", "1", "DWord")
-    $key.Handle.Close()
-    [System.GC]::Collect()
-
-    Dismount-RegistryHive "HKLM\DEFAULT"
-}
-
 # allow msi to write to temp folder
 # see https://github.com/actions/runner-images/issues/1704
 cmd /c "icacls $env:SystemRoot\Temp /grant Users:f /t /c /q 2>&1" | Out-Null
