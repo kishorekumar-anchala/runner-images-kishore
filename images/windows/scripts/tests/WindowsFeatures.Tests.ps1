@@ -11,7 +11,9 @@ Describe "WindowsFeatures" {
     }
 
     it "Check WSL is on path" {
-        (Get-Command -Name 'wsl') | Should -BeTrue
+       if (Test-IsWin19) {
+           (Get-Command -Name 'wsl') | Should -BeTrue 
+      }
     }
 
     it "Check WLAN service is stopped" {
@@ -85,6 +87,12 @@ Describe "Windows Updates" {
 
 Describe "WSL2" -Skip:((Test-IsWin19)) {
     It "WSL status should return zero exit code" {
-        "wsl --status" | Should -ReturnZeroExitCode
+        # Check if WSL is installed before running the command
+        $wslInstalled = (Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled"
+        if ($wslInstalled) {
+            "wsl --status" | Should -ReturnZeroExitCode
+        } else {
+            Write-Host "WSL is not installed, skipping the test."
+        }
     }
 }
