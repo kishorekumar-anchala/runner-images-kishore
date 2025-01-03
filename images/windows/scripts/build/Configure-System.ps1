@@ -19,6 +19,14 @@ if (Test-IsWin22) {
         Write-Host "Creating $keyPath key"
         New-Item -Path (Join-Path "HKLM:\" $keyPath) -Force | Out-Null
     }
+
+    # Set the DefaultVersion value to 1
+    $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($keyPath, $true)
+    $key.SetValue("DefaultVersion", "1", "DWord")
+    $key.Handle.Close()
+    [System.GC]::Collect()
+
+    Dismount-RegistryHive "HKLM\DEFAULT"
 }
 
 # allow msi to write to temp folder
