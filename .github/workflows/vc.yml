@@ -1,4 +1,4 @@
-name: Check Visual Studio License Expiry Date
+name: Check Visual Studio Installation and License Expiry (Indirect)
 
 on:
   push:
@@ -12,44 +12,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check Visual Studio License Expiry Date via Registry
+      - name: Check for Visual Studio 2022 Enterprise
         shell: pwsh
         run: |
-          # Registry path for Visual Studio 2022 Enterprise license info (adjust as needed)
-          $vsRegistryPath = "HKCU:\SOFTWARE\Microsoft\VisualStudio\17.0"
+          # Path to the Visual Studio Installer executable
+          $vsInstallerPath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
 
-          # Check if the Visual Studio registry path exists
-          if (Test-Path $vsRegistryPath) {
-              # Retrieve product license information from the registry
-              $licenseKey = Get-ItemProperty -Path $vsRegistryPath -Name "License"
+          # Check if Visual Studio Installer is present
+          if (Test-Path $vsInstallerPath) {
+              # Query the Visual Studio installation status using vs_installer.exe
+              $vsInstallations = & $vsInstallerPath list --installed --format json
 
-              # Extract any information regarding expiration if available
-              if ($licenseKey) {
-                  Write-Host "Visual Studio 2022 Enterprise License Information:"
-                  Write-Host "License: $($licenseKey.License)"
+              # Convert output to JSON
+              $vsInstallationsJson = $vsInstallations | ConvertFrom-Json
 
-                  # Assuming expiration data might be stored as a timestamp or string
-                  # Attempt to extract expiration details (hypothetical example)
-                  $expirationDate = $licenseKey.LicenseExpirationDate
+              # Filter to check for Visual Studio 2022 Enterprise edition
+              $vs2022Enterprise = $vsInstallationsJson | Where-Object { $_.edition -eq 'Enterprise' -and $_.version -like '17*' }
 
-                  if ($expirationDate) {
-                      Write-Host "License Expiration Date: $expirationDate"
-                      $expiryDateFormatted = [datetime]::Parse($expirationDate)
-                      $currentDate = [datetime]::Now
-                      $daysLeft = ($expiryDateFormatted - $currentDate).Days
-
-                      Write-Host "Days remaining until expiration: $daysLeft"
-                  }
-                  else {
-                      Write-Host "No explicit expiration date found in registry."
-                  }
+              if ($vs2022Enterprise) {
+                  # Extract version and license information
+                  $vsVersion = $vs2022Enterprise.version
+                  $vsEdition = $vs2022Enterprise.edition
+                  Write-Host "Visual Studio 2022 Enterprise is installed."
+                  Write-Host "Version: $vsVersion, Edition: $vsEdition"
               }
               else {
-                  Write-Host "No license information found in the registry."
+                  Write-Host "Visual Studio 2022 Enterprise is not installed."
                   exit 1
               }
           }
           else {
-              Write-Host "Visual Studio 2022 not installed or registry path not found."
+              Write-Host "Visual Studio Installer not found."
               exit 1
           }
