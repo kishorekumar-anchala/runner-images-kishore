@@ -16,7 +16,7 @@ jobs:
         shell: pwsh
         run: |
           # Path to the license file (adjust this path if needed)
-          $licenseFilePath = 'C:\ProgramData\Microsoft VisualStudio\Packages\_channels\channel_1\license.json'
+          $licenseFilePath = 'C:\ProgramData\Microsoft VisualStudio\Packages\_channels\release\license.json'
           
           # Read the license file and get the expiration date
           if (Test-Path $licenseFilePath) {
