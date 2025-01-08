@@ -1,7 +1,7 @@
 name: Check Visual Studio Expiry
 
 on:
-  push: 
+  push:
   workflow_dispatch:  # Manual trigger
 
 jobs:
@@ -12,25 +12,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up PowerShell environment
-        uses: actions/setup-powershell@v2
-
       - name: Check Visual Studio License Expiry
         shell: pwsh
         run: |
-          $expiryDate = Get-Content 'C:\ProgramData\Microsoft VisualStudio\Packages\_channels\channel_1\license.json' | ConvertFrom-Json | Select-Object -ExpandProperty ExpirationDate
-          if ($expiryDate) {
-              $expiryDateFormatted = [datetime]::Parse($expiryDate).ToString('yyyy-MM-dd')
-              Write-Host "Visual Studio license expires on $expiryDateFormatted"
-              if ([datetime]::Now -gt [datetime]::Parse($expiryDate)) {
-                  Write-Host "Your Visual Studio license has expired."
-                  exit 1
+          # Path to the license file (adjust this path if needed)
+          $licenseFilePath = 'C:\ProgramData\Microsoft VisualStudio\Packages\_channels\channel_1\license.json'
+          
+          # Read the license file and get the expiration date
+          if (Test-Path $licenseFilePath) {
+              $licenseData = Get-Content $licenseFilePath | ConvertFrom-Json
+              $expiryDate = $licenseData.ExpirationDate
+
+              if ($expiryDate) {
+                  # Convert the expiry date to DateTime format
+                  $expiryDateFormatted = [datetime]::Parse($expiryDate)
+                  $currentDate = [datetime]::Now
+
+                  # Calculate the difference in days
+                  $daysLeft = ($expiryDateFormatted - $currentDate).Days
+
+                  # Output the result
+                  Write-Host "Visual Studio license expires on $expiryDateFormatted."
+                  Write-Host "Days remaining until expiration: $daysLeft"
+
+                  if ($daysLeft -lt 0) {
+                      Write-Host "Your Visual Studio license has expired."
+                      exit 1
+                  }
+                  else {
+                      Write-Host "Your Visual Studio license is valid."
+                  }
               }
               else {
-                  Write-Host "Your Visual Studio license is valid."
+                  Write-Host "Could not retrieve license expiry information."
+                  exit 1
               }
           }
           else {
-              Write-Host "Could not retrieve license expiry information."
+              Write-Host "License file not found at $licenseFilePath."
               exit 1
           }
