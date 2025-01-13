@@ -8,4 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 1
     steps:
-      - run: podman system info
+      - run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            systemctl --user enable --now podman.socket
+          fi
+          podman system info
