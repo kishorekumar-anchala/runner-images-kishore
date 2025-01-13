@@ -1,21 +1,11 @@
-name: Test PackageManagement Installation on Ubuntu
-
-on:
-  push:
-
+name: Show
+on: push
 jobs:
-  test-install:
-    runs-on: ubuntu-22.04  # Use the latest Ubuntu runner
-    
+  show:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, ubuntu-22.04 ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 1
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2  # Checkout the repository code
-
-
-    - name: Install PackageManagement module in PowerShell
-      run: |
-        pwsh -Command "Install-Module -Name PackageManagement -Force -Scope CurrentUser"
-
-    - name: Verify PackageManagement module installation
-      run: |
-        pwsh -Command "Get-Module -ListAvailable PackageManagement || exit 1"
+      - run: podman system info
