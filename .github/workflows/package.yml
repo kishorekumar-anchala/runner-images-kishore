@@ -14,7 +14,7 @@ jobs:
 
     - name: Install PackageManagement module in PowerShell
       run: |
-        pwsh -Command "Install-Module -Name PackageManagement -Force -Scope AllUsers"
+        pwsh -Command "Install-Module -Name PackageManagement -Force -Scope CurrentUser"
 
     - name: Verify PackageManagement module installation
       run: |
