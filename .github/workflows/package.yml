@@ -1,0 +1,21 @@
+name: Test PackageManagement Installation on Ubuntu
+
+on:
+  push:
+
+jobs:
+  test-install:
+    runs-on: ubuntu-22.04  # Use the latest Ubuntu runner
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Checkout the repository code
+
+
+    - name: Install PackageManagement module in PowerShell
+      run: |
+        pwsh -Command "Install-Module -Name PackageManagement -Force -Scope AllUsers"
+
+    - name: Verify PackageManagement module installation
+      run: |
+        pwsh -Command "Get-Module -ListAvailable PackageManagement || exit 1"
