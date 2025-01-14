@@ -19,6 +19,14 @@ $modules = (Get-ToolsetContent).azureModules
 
 $psModuleMachinePath = ""
 
+# Preserve TMP and TEMP environment variables
+$env_TMP = $env:TMP
+$env_TEMP = $env:TEMP
+
+# Set TMP and TEMP to a folder on C: drive
+$env:TMP = "C:\_trashable\Modules"
+$env:TEMP = "C:\_trashable\Modules"
+
 foreach ($module in $modules) {
     $moduleName = $module.name
 
@@ -44,8 +52,15 @@ foreach ($module in $modules) {
     }
 }
 
+# Revert TMP and TEMP environment variables back to their original values
+$env:TMP = $env_TMP
+$env:TEMP = $env_TEMP
+
 # Add modules to the PSModulePath
 $psModuleMachinePath += $env:PSModulePath
 [Environment]::SetEnvironmentVariable("PSModulePath", $psModuleMachinePath, "Machine")
 
+# Run Pester tests to validate the installation
 Invoke-PesterTests -TestFile "PowerShellAzModules" -TestName "AzureModules"
+
+ECHO "Finished"
