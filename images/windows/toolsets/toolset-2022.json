@@ -90,7 +90,7 @@
     ],
     "azureModules": [
         {
-            "name": "azurerm",
+            "name": "azureRM",
             "versions": [
                 "2.1.0",
                 "6.13.1"
