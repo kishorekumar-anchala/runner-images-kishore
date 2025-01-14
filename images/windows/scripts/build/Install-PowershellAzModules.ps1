@@ -4,6 +4,9 @@
 ##  Supply chain security: package manager
 ################################################################################
 
+# Set TLS1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor "Tls12"
+
 # The correct Modules need to be saved in C:\Modules
 $installPSModulePath = "C:\\Modules"
 if (-not (Test-Path -LiteralPath $installPSModulePath)) {
