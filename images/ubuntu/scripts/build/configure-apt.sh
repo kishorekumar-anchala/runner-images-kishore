@@ -61,8 +61,6 @@ else
     cat /etc/apt/sources.list.d/ubuntu.sources
 fi
 
-apt-get clean 
-rm -rf /var/lib/apt/lists/*
 
 apt-get update
 # Install jq
