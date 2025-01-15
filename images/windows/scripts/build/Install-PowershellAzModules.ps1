@@ -19,14 +19,6 @@ $modules = (Get-ToolsetContent).azureModules
 
 $psModuleMachinePath = ""
 
-# Preserve TMP and TEMP environment variables
-$env_TMP = $env:TMP
-$env_TEMP = $env:TEMP
-
-# Set TMP and TEMP to a folder on C: drive
-$env:TMP = "C:\_trashable\Modules"
-$env:TEMP = "C:\_trashable\Modules"
-
 foreach ($module in $modules) {
     $moduleName = $module.name
 
@@ -34,12 +26,12 @@ foreach ($module in $modules) {
     foreach ($version in $module.versions) {
         $modulePath = Join-Path -Path $installPSModulePath -ChildPath "${moduleName}_${version}"
         Write-Host " - $version [$modulePath]"
-        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -ErrorAction Stop
+        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -AllowClobber -ErrorAction Stop
     }
 
     foreach ($version in $module.zip_versions) {
         $modulePath = Join-Path -Path $installPSModulePath -ChildPath "${moduleName}_${version}"
-        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -ErrorAction Stop
+        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -AllowClobber -ErrorAction Stop
         Compress-Archive -Path $modulePath -DestinationPath "${modulePath}.zip"
         Remove-Item $modulePath -Recurse -Force
     }
@@ -52,15 +44,9 @@ foreach ($module in $modules) {
     }
 }
 
-# Revert TMP and TEMP environment variables back to their original values
-$env:TMP = $env_TMP
-$env:TEMP = $env_TEMP
-
 # Add modules to the PSModulePath
 $psModuleMachinePath += $env:PSModulePath
 [Environment]::SetEnvironmentVariable("PSModulePath", $psModuleMachinePath, "Machine")
 
 # Run Pester tests to validate the installation
 Invoke-PesterTests -TestFile "PowerShellAzModules" -TestName "AzureModules"
-
-ECHO "Finished"
