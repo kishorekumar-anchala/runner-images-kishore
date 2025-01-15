@@ -14,6 +14,14 @@ if (-not (Test-Path -LiteralPath $installPSModulePath)) {
     New-Item -Path $installPSModulePath -ItemType Directory | Out-Null
 }
 
+# Clear PowerShellGet cache to avoid corrupted package issues
+Write-Host "Clearing PowerShellGet cache..."
+$env:PSModulePath.Split(';') | ForEach-Object { Remove-Item "$_\PowerShellGet" -Recurse -Force -ErrorAction SilentlyContinue }
+
+# clear NuGet provider cache
+Write-Host "Clearing NuGet provider cache..."
+Unregister-PackageSource -Name nuget.org -ErrorAction SilentlyContinue
+
 # Get modules content from toolset
 $modules = (Get-ToolsetContent).azureModules
 
@@ -26,12 +34,12 @@ foreach ($module in $modules) {
     foreach ($version in $module.versions) {
         $modulePath = Join-Path -Path $installPSModulePath -ChildPath "${moduleName}_${version}"
         Write-Host " - $version [$modulePath]"
-        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -AllowClobber -ErrorAction Stop
+        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -ErrorAction Stop
     }
 
     foreach ($version in $module.zip_versions) {
         $modulePath = Join-Path -Path $installPSModulePath -ChildPath "${moduleName}_${version}"
-        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -AllowClobber -ErrorAction Stop
+        Save-Module -Path $modulePath -Name $moduleName -RequiredVersion $version -Force -ErrorAction Stop
         Compress-Archive -Path $modulePath -DestinationPath "${modulePath}.zip"
         Remove-Item $modulePath -Recurse -Force
     }
