@@ -37,9 +37,26 @@ EOF
 # Uninstall unattended-upgrades
 apt-get purge unattended-upgrades
 
+
+
 echo 'APT sources'
 if ! is_ubuntu24; then
-    cat /etc/apt/sources.list
+    # cat /etc/apt/sources.list
+    # Fix repository issues by updating sources list
+
+echo 'Updating APT sources...'
+
+cat <<EOF >/etc/apt/sources.list
+
+deb http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse
+
+deb http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse
+
+deb http://archive.ubuntu.com/ubuntu jammy-backports main restricted universe multiverse
+
+deb http://archive.ubuntu.com/ubuntu jammy-security main restricted universe multiverse
+
+EOF
 else
     cat /etc/apt/sources.list.d/ubuntu.sources
 fi
