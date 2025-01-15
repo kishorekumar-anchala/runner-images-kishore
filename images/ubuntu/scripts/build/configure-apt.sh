@@ -73,3 +73,15 @@ if ! is_ubuntu24; then
     # https://github.com/ilikenwf/apt-fast
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/ilikenwf/apt-fast/master/quick-install.sh)"
 fi
+
+# Check for broken dependencies and fix them 
+sudo dpkg --configure -a 
+sudo apt-get install -f 
+
+# Clean APT cache to prevent issues sudo 
+apt-get clean sudo 
+apt-get update 
+
+# Final update and upgrade to ensure all packages are correctly configured 
+sudo apt-get update 
+sudo apt-get upgrade -y
