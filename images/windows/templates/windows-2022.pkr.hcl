@@ -341,6 +341,7 @@ build {
   provisioner "powershell" {
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     scripts          = [
+      "${path.root}/../scripts/build/Install-PowershellAzModules.ps1",
       "${path.root}/../scripts/build/Install-ActionsCache.ps1",
       "${path.root}/../scripts/build/Install-Ruby.ps1",
       "${path.root}/../scripts/build/Install-PyPy.ps1",
@@ -348,7 +349,6 @@ build {
       "${path.root}/../scripts/build/Configure-Toolset.ps1",
       "${path.root}/../scripts/build/Install-NodeJS.ps1",
       "${path.root}/../scripts/build/Install-AndroidSDK.ps1",
-      "${path.root}/../scripts/build/Install-PowershellAzModules.ps1",
       "${path.root}/../scripts/build/Install-Pipx.ps1",
       "${path.root}/../scripts/build/Install-Git.ps1",
       "${path.root}/../scripts/build/Install-GitHub-CLI.ps1",
