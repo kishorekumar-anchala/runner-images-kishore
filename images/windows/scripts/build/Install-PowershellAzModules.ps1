@@ -45,14 +45,4 @@ foreach ($module in $modules) {
 $psModuleMachinePath += $env:PSModulePath
 [Environment]::SetEnvironmentVariable("PSModulePath", $psModuleMachinePath, "Machine")
 
-# Install AzureRM in the current user scope of Windows PowerShell 5.1 if specified
-foreach ($module in $modules) {
-    if (($module.name -eq "azurerm" -or $module.name -eq "azure") -and $PSVersionTable.PSVersion.Major -eq 5) {
-        foreach ($version in $module.versions) {
-            Write-Host "Installing $($module.name) version $version for PowerShell 5.1..."
-            Install-Module -Name $module.name -RequiredVersion $version -Scope CurrentUser -Force -AllowClobber
-        }
-    }
-}
-
 Invoke-PesterTests -TestFile "PowerShellAzModules" -TestName "AzureModules"
