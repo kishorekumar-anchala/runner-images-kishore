@@ -93,7 +93,7 @@ get_github_releases_by_version() {
 
     if [[ -z "$json_filtered" ]]; then
         echo "Failed to get releases from ${repo} matching version ${version}" >&2
-        echo "Available versions: $(echo "$json" | jq -r '.tag_name')" >&2
+        echo "Available versions: $(echo "$json" | jq -r '.[] | .tag_name')" >&2
         exit 1
     fi
 
