@@ -28,7 +28,7 @@ jobs:
       # Step 4: Verify checksum (example checksum value)
       - name: Verify Helm checksum
         run: |
-          EXPECTED_CHECKSUM="a0c6c0eab5b2c004ea923a80095b477f4eacfa68520b5d0e6f69c5edc4f39bff" # Replace with actual checksum
+          EXPECTED_CHECKSUM="fb5d12662fde6eeff36ac4ccacbf3abed96b0ee2de07afdde4edb14e613aee24" # Replace with actual checksum
           echo "$EXPECTED_CHECKSUM  helm-v3.17.0-linux-amd64.tar.gz" | sha256sum --check --strict
 
       # Step 5: Extract Helm and install it
