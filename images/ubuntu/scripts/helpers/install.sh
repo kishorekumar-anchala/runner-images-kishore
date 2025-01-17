@@ -150,7 +150,7 @@ get_checksum_from_github_release() {
     fi
 
     matching_releases=$(get_github_releases_by_version "${repo}" "${version}" "${allow_pre_release}" "true")
-    matched_line=$(printf "$(echo $matching_releases | jq '.body')\n" | grep "$file_name")
+    matched_line=$(echo "$matching_releases" | jq -r '.body' | grep -F "$file_name")
 
     if [[ -z "$matched_line" ]]; then
         echo "File name ${file_name} not found in release body" >&2
