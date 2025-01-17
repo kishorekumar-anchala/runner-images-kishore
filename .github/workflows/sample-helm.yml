@@ -1,0 +1,20 @@
+name: Install Helm 3
+
+on:
+  push:
+
+jobs:
+  install-helm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Helm 3
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+      - name: Verify Helm Installation
+        run: |
+          helm version
