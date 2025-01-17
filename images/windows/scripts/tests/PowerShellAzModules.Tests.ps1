@@ -11,7 +11,7 @@ Describe "AzureModules" {
             foreach ($version in $module.versions) {
                 $modulePath = Join-Path -Path $modulesRootPath -ChildPath "${moduleName}_${version}"
                 $moduleInfo = @{ moduleName = $moduleName; modulePath = $modulePath; expectedVersion = $version }
-                It "<expectedVersion> exists in modules directory" -TestCases $moduleInfo {
+                It "Version $($moduleInfo.expectedVersion) exists in modules directory" -TestCases $moduleInfo {
                     $ScriptBlock = {
                         param ($modulePath, $moduleName)
                         Import-Module ImageHelpers
@@ -24,7 +24,7 @@ Describe "AzureModules" {
                     }
                     $moduleVersion = Get-Content -Path "$env:TEMP\module-version.txt"
                     Remove-Item -Path "${env:TEMP}\module-version.txt" -Force
-                    $moduleVersion | Should -Match $expectedVersion
+                    $moduleVersion | Should -Match $moduleInfo.expectedVersion
                 }
             }
 
@@ -32,7 +32,7 @@ Describe "AzureModules" {
                 $moduleInfo = @{ moduleName = $moduleName; moduleDefault = $module.default }
                 It "<moduleDefault> set as default" -TestCases $moduleInfo {
                         $moduleVersions = Get-Module -ListAvailable -Name $moduleName | ForEach-Object { $_.Version.ToString() }
-                        $moduleVersions | Should -Contain $moduleDefault
+                        $moduleVersions | Should -Contain $moduleInfo.moduleDefault
                 }
             }
         }
