@@ -1,0 +1,50 @@
+name: Helm Setup and Installation
+
+on:
+  push:
+jobs:
+  helm-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl tar
+
+      # Step 3: Download Helm v3.17.0
+      - name: Download Helm
+        run: |
+          HELM_VERSION="v3.17.0"
+          HELM_TARBALL="helm-$HELM_VERSION-linux-amd64.tar.gz"
+          HELM_URL="https://get.helm.sh/$HELM_TARBALL"
+          curl -sSL "$HELM_URL" -o "$HELM_TARBALL"
+
+      # Step 4: Verify checksum (example checksum value)
+      - name: Verify Helm checksum
+        run: |
+          EXPECTED_CHECKSUM="a0c6c0eab5b2c004ea923a80095b477f4eacfa68520b5d0e6f69c5edc4f39bff" # Replace with actual checksum
+          echo "$EXPECTED_CHECKSUM  helm-v3.17.0-linux-amd64.tar.gz" | sha256sum --check --strict
+
+      # Step 5: Extract Helm and install it
+      - name: Extract and Install Helm
+        run: |
+          tar -zxvf helm-v3.17.0-linux-amd64.tar.gz
+          sudo mv linux-amd64/helm /usr/local/bin/helm
+
+      # Step 6: Verify Helm installation
+      - name: Verify Helm installation
+        run: |
+          helm version
+
+      # Step 7: Additional provisioning steps (if any)
+      - name: Run additional Helm commands or provisioning
+        run: |
+          # Replace this with any additional Helm commands you need
+          helm repo add stable https://charts.helm.sh/stable
+          helm repo update
