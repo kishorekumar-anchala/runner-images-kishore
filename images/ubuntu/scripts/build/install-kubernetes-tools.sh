@@ -18,6 +18,11 @@ use_checksum_comparison "${kind_binary_path}" "${kind_external_hash}"
 
 # Install KIND
 install "${kind_binary_path}" /usr/local/bin/kind
+if command -v kind &>/dev/null; then
+  echo "KIND installation successful."
+else
+  echo "KIND installation failed."
+fi
 
 ## Install kubectl
 kubectl_minor_version=$(curl -fsSL "https://dl.k8s.io/release/stable.txt" | cut -d'.' -f1,2 )
@@ -26,9 +31,20 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 apt-get update
 apt-get install kubectl
 rm -f /etc/apt/sources.list.d/kubernetes.list
+if command -v kubectl &>/dev/null; then
+  echo "kubectl installation successful."
+else
+  echo "kubectl installation failed."
+fi
 
 # Install Helm
 curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+if command -v helm &>/dev/null; then
+  echo "Helm installation successful."
+else
+  echo "Helm installation failed."
+fi
+
 # Download minikube
 curl -fsSL -O https://storage.googleapis.com/minikube/releases/v1.34.0/minikube-linux-amd64
 
@@ -38,10 +54,20 @@ use_checksum_comparison "minikube-linux-amd64" "${minikube_hash}"
 
 # Install minikube
 install minikube-linux-amd64 /usr/local/bin/minikube
+if command -v minikube &>/dev/null; then
+  echo "minikube installation successful."
+else
+  echo "minikube installation failed."
+fi
 
 # Install kustomize
 download_url="https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 curl -fsSL "$download_url" | bash
 mv kustomize /usr/local/bin
+if command -v kustomize &>/dev/null; then
+  echo "kustomize installation successful."
+else
+  echo "kustomize installation failed."
+fi
 
 invoke_tests "Tools" "Kubernetes tools"
