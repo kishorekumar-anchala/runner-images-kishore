@@ -303,7 +303,7 @@ Describe "Kubernetes tools" {
     }
 }
 
-Describe "Helm {
+Describe "Helm" {
     It "helm" {
         "helm version --short" | Should -ReturnZeroExitCode
     }
