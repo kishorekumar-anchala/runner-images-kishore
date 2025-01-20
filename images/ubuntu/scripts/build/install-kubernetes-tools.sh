@@ -28,12 +28,12 @@ apt-get install kubectl
 rm -f /etc/apt/sources.list.d/kubernetes.list
 
 # Install Helm
-curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 # Download minikube
-curl -fsSL -O https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+curl -fsSL -O https://storage.googleapis.com/minikube/releases/v1.34.0/minikube-linux-amd64
 
 # Supply chain security - minikube
-minikube_hash=$(get_checksum_from_github_release "kubernetes/minikube" "linux-amd64" "latest" "SHA256")
+minikube_hash=$(get_checksum_from_github_release "kubernetes/minikube" "linux-amd64" "1.34.0" "SHA256")
 use_checksum_comparison "minikube-linux-amd64" "${minikube_hash}"
 
 # Install minikube
