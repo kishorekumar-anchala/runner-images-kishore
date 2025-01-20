@@ -29,6 +29,11 @@ rm -f /etc/apt/sources.list.d/kubernetes.list
 
 # Install Helm
 curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+ls -al /usr/local/bin
+echo "2"
+ls -al /usr/bin/helm
+chmod +x linux-amd64/helm
+mv linux-amd64/helm /usr/bin/helm
 
 # Download minikube
 curl -fsSL -O https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
