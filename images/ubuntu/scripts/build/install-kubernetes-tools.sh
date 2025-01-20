@@ -27,8 +27,6 @@ apt-get update
 apt-get install kubectl
 rm -f /etc/apt/sources.list.d/kubernetes.list
 
-# Install Helm
-curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 # Download minikube
 curl -fsSL -O https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
@@ -45,4 +43,4 @@ download_url="https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master
 curl -fsSL "$download_url" | bash
 mv kustomize /usr/local/bin
 
-invoke_tests "Tools" "Kubernetes tools"
+invoke_tests "Tools" "Helm"

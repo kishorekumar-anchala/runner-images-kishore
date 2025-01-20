@@ -294,16 +294,18 @@ Describe "Kubernetes tools" {
         "kubectl version --client=true" | Should -OutputTextMatchingRegex "Client Version: v"
     }
 
-    It "helm" {
-        "helm version --short" | Should -ReturnZeroExitCode
-    }
-
     It "minikube" {
         "minikube version --short" | Should -ReturnZeroExitCode
     }
 
     It "kustomize" {
         "kustomize version" | Should -ReturnZeroExitCode
+    }
+}
+
+Describe "Helm {
+    It "helm" {
+        "helm version --short" | Should -ReturnZeroExitCode
     }
 }
 
