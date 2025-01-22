@@ -2,11 +2,6 @@ name: Build Only (Android)
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build-only-android:
