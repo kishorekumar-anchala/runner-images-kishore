@@ -8,6 +8,7 @@
 # Source the helpers for use with the script
 source $HELPER_SCRIPTS/install.sh
 
+echo "Installing KIND ..."
 # Download KIND
 kind_url=$(resolve_github_release_asset_url "kubernetes-sigs/kind" "endswith(\"kind-linux-amd64\")" "latest")
 kind_binary_path=$(download_with_retry "${kind_url}")
@@ -25,6 +26,7 @@ else
 fi
 
 ## Install kubectl
+echo "Installing kubectl ..."
 kubectl_minor_version=$(curl -fsSL "https://dl.k8s.io/release/stable.txt" | cut -d'.' -f1,2 )
 curl -fsSL https://pkgs.k8s.io/core:/stable:/$kubectl_minor_version/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/'$kubectl_minor_version'/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -38,6 +40,7 @@ else
 fi
 
 # Install Helm
+echo "Installing Helm ..."
 curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 if command -v helm &>/dev/null; then
   echo "Helm installation successful."
@@ -46,6 +49,7 @@ else
 fi
 # Temporarily pinning the version
 # Download minikube
+echo "Installing minikube ..."
 curl -fsSL -O https://storage.googleapis.com/minikube/releases/v1.34.0/minikube-linux-amd64
 
 # Supply chain security - minikube
@@ -61,6 +65,7 @@ else
 fi
 
 # Install kustomize
+echo "Installing kustomize ..."
 download_url="https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 curl -fsSL "$download_url" | bash
 mv kustomize /usr/local/bin
