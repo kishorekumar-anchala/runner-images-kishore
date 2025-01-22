@@ -16,4 +16,6 @@ jobs:
 
       # Step 4: Perform .NET workload search
       - name: Run .NET Workload Search
-        run: dotnet workload search
+        run: | 
+          dotnet workload search
+          dotnet --info
