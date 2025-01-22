@@ -5,6 +5,7 @@ jobs:
   dotnet-workload-search:
     name: Run `dotnet --info` and `dotnet workload search`
     runs-on: windows-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -14,9 +15,8 @@ jobs:
         with:
           dotnet-version: '8.0.404'
 
-      - name: Install Android workload
+      - name: Install .NET Android workload
         run: |
-          dotnet workload install android
           dotnet workload list
 
       - name: Run `dotnet --info`
