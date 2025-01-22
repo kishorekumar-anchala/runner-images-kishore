@@ -44,7 +44,7 @@ if command -v helm &>/dev/null; then
 else
   echo "Helm installation failed."
 fi
-
+# Temporarily pinning the version
 # Download minikube
 curl -fsSL -O https://storage.googleapis.com/minikube/releases/v1.34.0/minikube-linux-amd64
 
