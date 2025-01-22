@@ -1,26 +1,24 @@
 on: [push, workflow_dispatch]
 name: .NET breakage reproducer
 
+
 jobs:
-  dotnet-workload-search:
-    name: Run `dotnet --info` and `dotnet workload search`
+  dotnet-info:
+    name: Run `dotnet --info`
     runs-on: windows-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up .NET SDK 8.0.404
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.404'
-
-      - name: Install .NET Android workload
-        run: |
-          dotnet workload list
 
       - name: Run `dotnet --info`
         run: dotnet --info
+
+  dotnet-workload-search:
+    name: Run `dotnet workload search`
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Run `dotnet workload search`
         run: dotnet workload search
