@@ -1,0 +1,12 @@
+name: Check Kernel Version
+
+on: 
+  push:
+
+jobs:
+  check-kernel:
+    runs-on: ubuntu-latest  # You can change this to any runner you need
+
+    steps:
+      - name: Check Kernel Version
+        run: uname -r
