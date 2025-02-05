@@ -1,0 +1,29 @@
+name: Test Az Module Functionality
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: windows-2025
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run tests for Az module
+      run: |
+        Import-Module Az
+        Connect-AzAccount -Identity
+        $resourceGroupName = "TestResourceGroup"
+        $location = "EastUS"
+        
+        # Create a resource group
+        New-AzResourceGroup -Name $resourceGroupName -Location $location
+
+        # List resource groups
+        $resourceGroups = Get-AzResourceGroup
+        Write-Output "Resource Groups: $($resourceGroups.Name -join ', ')"
+
+        # Delete the test resource group
+        Remove-AzResourceGroup -Name $resourceGroupName -Force
