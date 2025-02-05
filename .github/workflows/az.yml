@@ -11,13 +11,43 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Run tests for Az module
+
+    - name: Install and Import Az Module
       run: |
-        Import-Module Az
+        # Install the Az module
+        Install-Module -Name Az -AllowClobber -Force
+
+        # Verify installation
+        $module = Get-InstalledModule -Name Az -ErrorAction SilentlyContinue
+        if (-not $module) {
+          throw "Az module installation failed"
+        }
+
+        # Import the Az module
+        Import-Module -Name Az -Force
+      shell: pwsh
+
+    - name: Ensure AzureRM and Azure Modules Are Not Installed
+      run: |
+        $azurerm = Get-InstalledModule -Name AzureRM -ErrorAction SilentlyContinue
+        $azure = Get-InstalledModule -Name Azure -ErrorAction SilentlyContinue
+        if ($azurerm -or $azure) {
+          throw "AzureRM or Azure module is still installed"
+        } else {
+          Write-Output "AzureRM and Azure modules are not installed"
+        }
+      shell: pwsh
+
+    - name: Run Tests for Az Module
+      run: |
+        Import-Module -Name Az -Force
+
+        # Log in to Azure
         Connect-AzAccount -Identity
+
         $resourceGroupName = "TestResourceGroup"
         $location = "EastUS"
-        
+
         # Create a resource group
         New-AzResourceGroup -Name $resourceGroupName -Location $location
 
@@ -27,3 +57,4 @@ jobs:
 
         # Delete the test resource group
         Remove-AzResourceGroup -Name $resourceGroupName -Force
+      shell: pwsh
