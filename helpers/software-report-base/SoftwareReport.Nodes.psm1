@@ -256,20 +256,10 @@ class ToolVersionsListNode: BaseToolNode {
     hidden [void] ValidateMajorVersionRegex() {
         $this.Versions | Group-Object { $this.ExtractMajorVersion($_) } | ForEach-Object {
             if ($_.Count -gt 1) {
-                throw "Multiple versions from list '$($this.Versions -join ", ")' return the same result from regex '$($this.MajorVersionRegex)': $($_.Name)"
+                throw "Multiple versions from list '$($this.GetValue())' return the same result from regex '$($this.MajorVersionRegex)': $($_.Name)"
             }
         }
     }
-    
-    hidden [string] ExtractMajorVersion($version) {
-        # Extract the major version part using the regex
-        if ($version -match $this.MajorVersionRegex) {
-            return $matches[0]
-        } else {
-            throw "Version '$version' does not match the regex '$($this.MajorVersionRegex)'"
-        }
-    }
-    
 }
 
 class TableNode: BaseNode {
