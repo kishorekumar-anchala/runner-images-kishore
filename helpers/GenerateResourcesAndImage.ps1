@@ -106,9 +106,6 @@ Function GenerateResourcesAndImage {
         .PARAMETER Force
             Delete the resource group if it exists without user confirmation.
             This parameter is deprecated and will be removed in a future release.
-        .PARAMETER ReuseResourceGroup
-            Reuse the resource group if it exists without user confirmation.
-            This parameter is deprecated and will be removed in a future release.
         .PARAMETER OnError
             Specify how packer handles an error during image creation.
             Options:
@@ -148,21 +145,12 @@ Function GenerateResourcesAndImage {
         [Parameter(Mandatory = $False)]
         [switch] $Force,
         [Parameter(Mandatory = $False)]
-        [switch] $ReuseResourceGroup,
-        [Parameter(Mandatory = $False)]
         [ValidateSet("abort", "ask", "cleanup", "run-cleanup-provisioner")]
         [string] $OnError = "ask",
         [Parameter(Mandatory = $False)]
         [hashtable] $Tags = @{}
     )
 
-    if ($Force -or $ReuseResourceGroup) {
-        Write-Warning "The `ReuseResourceGroup` and `Force` parameters are deprecated and will be removed in a future release. The resource group will be reused when it already exists and an error will be thrown when it doesn't. If you want to delete the resource group, please delete it manually."
-    }
-
-    if ($Force -and $ReuseResourceGroup) {
-        throw "Force and ReuseResourceGroup cannot be used together."
-    }
 
     Show-LatestCommit -ErrorAction SilentlyContinue
 
@@ -264,7 +252,7 @@ Function GenerateResourcesAndImage {
         }
 
         # Remove resource group if it exists and we are not reusing it
-        if ($ResourceGroupExists -and -not $ReuseResourceGroup) {
+        if ($ResourceGroupExists) {
             if ($Force) {
                 # Delete and recreate the resource group
                 Write-Host "Deleting resource group '$ResourceGroupName'..."
@@ -276,12 +264,7 @@ Function GenerateResourcesAndImage {
                 $ResourceGroupExists = $false
             }
             else {
-                # are we running in a non-interactive session?
-                # https://stackoverflow.com/questions/9738535/powershell-test-for-noninteractive-mode
-                if ([System.Console]::IsOutputRedirected -or ![Environment]::UserInteractive -or !!([Environment]::GetCommandLineArgs() | Where-Object { $_ -ilike '-noni*' })) {
-                    throw "Non-interactive mode, resource group '$ResourceGroupName' already exists, either specify -Force to delete it, or -ReuseResourceGroup to reuse."
-                }
-                else {
+              
                     # Resource group already exists, ask the user what to do
                     $title = "Resource group '$ResourceGroupName' already exists"
                     $message = "Do you want to delete the resource group and all resources in it?"
@@ -292,7 +275,7 @@ Function GenerateResourcesAndImage {
                         [System.Management.Automation.Host.ChoiceDescription]::new("&Abort", "Abort execution.")
                     )
                     $result = $Host.UI.PromptForChoice($title, $message, $options, 0)
-                }
+            
 
                 switch ($result) {
                     0 {
