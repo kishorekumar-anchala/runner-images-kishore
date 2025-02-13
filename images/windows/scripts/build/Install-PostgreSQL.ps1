@@ -61,25 +61,11 @@ if ($null -ne ($toolsetVersion | Select-String -Pattern '\d+\.\d+\.\d+')) {
 if ((Get-ToolsetContent).postgresql.installVcRedist) {
     # Postgres 14 requires the vs 17 redistributable
     $vs17RedistUrl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-    $tempPath = "D:\temp\vc_redist.x64.exe"
-    
-    # Download the Visual C++ Redistributable
-    Invoke-WebRequest -Uri $vs17RedistUrl -OutFile $tempPath
-
-    # Check if Visual C++ Redistributable is already installed
-    $existingVcRedist = Get-WmiObject -Class Win32_Product | Where-Object {
-        $_.Name -match "Microsoft Visual C++.* Redistributable"
-    }
-
-    if ($existingVcRedist) {
-        Write-Output "Visual C++ Redistributable is already installed. Skipping installation."
-    } else {
-        # Install the new Visual C++ Redistributable
-        Start-Process -FilePath $tempPath -ArgumentList "/install", "/quiet", "/norestart" -Wait
-        Write-Output "Visual C++ Redistributable installed successfully."
-    }
+    Install-Binary `
+        -Url $vs17RedistUrl `
+        -InstallArgs @("/install", "/quiet", "/norestart") `
+        -ExpectedSignature (Get-ToolsetContent).postgresql.vcRedistSignature
 }
-
 
 # Return the previous value of ErrorAction and invoke Install-Binary function
 $ErrorActionPreference = $errorActionOldValue
