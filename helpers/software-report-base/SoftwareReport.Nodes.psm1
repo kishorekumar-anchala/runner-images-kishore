@@ -254,7 +254,7 @@ class ToolVersionsListNode: BaseToolNode {
     }
 
     hidden [void] ValidateMajorVersionRegex() {
-        $this.Versions | Group-Object { $this.ExtractMajorVersion($_) }| ForEach-Object {
+        $this.Versions | Group-Object { $this.ExtractMajorVersion($_) } | ForEach-Object {
             if ($_.Count -gt 1) {
                 throw "Multiple versions from list '$($this.GetValue())' return the same result from regex '$($this.MajorVersionRegex)': $($_.Name)"
             }
