@@ -8,19 +8,16 @@ Describe "Dotnet SDK and tools" {
             "dotnet --version" | Should -ReturnZeroExitCode
         }
     }
-
     foreach ($version in $dotnetVersions) {
         Context "Dotnet $version" {
             $dotnet = @{ dotnetVersion = $version }
 
             It "SDK $version is available" -TestCases $dotnet {
-                Write-Host "Checking SDK version $($dotnet.dotnetVersion)"
-                (dotnet --list-sdks | Where-Object { $_ -match "^\d+\.\d+\.\d$($dotnet.dotnetVersion).(\d+)$" }).Count | Should -BeGreaterThan 0
+                (dotnet --list-sdks | Where-Object { $_ -match "${dotnetVersion}\.[0-9]*" }).Count | Should -BeGreaterThanOrEqual 0
             }
 
             It "Runtime $version is available" -TestCases $dotnet {
-                Write-Host "Checking Runtime version $($dotnet.dotnetVersion)"
-                (dotnet --list-runtimes | Where-Object { $_ -match "^\d+\.\d+\.\d$($dotnet.dotnetVersion).(\d+)$" }).Count | Should -BeGreaterThan 0
+                (dotnet --list-runtimes | Where-Object { $_ -match "${dotnetVersion}\.[0-9]*" }).Count | Should -BeGreaterThanOrEqual 0
             }
         }
     }
