@@ -313,6 +313,9 @@
             "command": "yarn"
         }
     ],
+    "git": {
+        "version": "2.47.1"
+    },
     "mongodb": {
         "version": "7.0"
     },
