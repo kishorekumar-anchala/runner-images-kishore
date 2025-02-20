@@ -5,7 +5,7 @@
 
 $downloadUrl = Resolve-GithubReleaseAssetUrl `
     -Repo "facebook/zstd" `
-    -Version "latest" `
+    -Version "v1.5.6" `
     -UrlMatchPattern "zstd-*-win64.zip"
 $zstdArchivePath = Invoke-DownloadWithRetry $downloadUrl
 $zstdName = [IO.Path]::GetFileNameWithoutExtension($zstdArchivePath)
