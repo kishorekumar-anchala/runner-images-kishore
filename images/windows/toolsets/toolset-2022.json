@@ -268,7 +268,7 @@
             "Component.Microsoft.Windows.DriverKit",
             "wasm.tools",
             "Microsoft.Component.MSBuild",
-            "Microsoft.VisualStudio.Component.CodeAnalysis.SDK"
+            "Microsoft.Component.CodeAnalysis.SDK"
             
         ],
         "vsix": [
