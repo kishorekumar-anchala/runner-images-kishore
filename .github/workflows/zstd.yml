@@ -11,18 +11,21 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Install dependencies on Windows
         run: |
           choco install mingw
 
-      - name: Clone zstd Repository
+      - name: Clone zstd Repository and Checkout Version 1.5.7
         run: |
           git clone https://github.com/facebook/zstd.git
           cd zstd
+          git checkout tags/v1.5.7
           make CC=gcc
 
       - name: Check zstd Version
-        run: zstd -V
+        run: |
+          cd zstd
+          ./zstd -V
         shell: bash
