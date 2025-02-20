@@ -4,14 +4,26 @@ on: [push]
 
 jobs:
   check-zstd-version:
-    runs-on: windows-2019
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest,windows-2019,windows-2025]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install zstd
-        run: choco install zstd
+      - name: Install dependencies on Windows
+        if: startsWith(matrix.os, 'windows-')
+        run: |
+          choco install make
+
+      - name: Clone zstd Repository
+        run: |
+          git clone https://github.com/facebook/zstd.git
+          cd zstd
+          make
 
       - name: Check zstd Version
         run: zstd -V
+        shell: bash
