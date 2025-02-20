@@ -190,7 +190,7 @@ Describe "WebPlatformInstaller" {
 
 Describe "Zstd" {
     It "zstd" {
-        "zstd -V" | Should -ReturnZeroExitCode
+        "zstd.exe --version" | Should -ReturnZeroExitCode
     }
 }
 
