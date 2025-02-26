@@ -154,14 +154,6 @@ Describe "Cmake" {
     }
 }
 
-Describe "erlang" {
-    $testCases = @("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand = $_} }
-
-    It "erlang <ErlangCommand>" -TestCases $testCases {
-        "$ErlangCommand" | Should -ReturnZeroExitCode
-    }
-}
-
 Describe "gcc" {
     $testCases = (Get-ToolsetContent).gcc.Versions | ForEach-Object { @{GccVersion = $_} }
 
@@ -267,12 +259,6 @@ Describe "Heroku" -Skip:((-not (Test-IsUbuntu22))) {
     }
 }
 
-Describe "HHVM"{
-    It "hhvm" {
-        "hhvm --version" | Should -ReturnZeroExitCode
-    }
-}
-
 Describe "Homebrew" {
     It "homebrew" {
         "/home/linuxbrew/.linuxbrew/bin/brew --version" | Should -ReturnZeroExitCode
@@ -328,13 +314,6 @@ Describe "Packer" {
 Describe "Pulumi" {
     It "pulumi" {
         "pulumi version" | Should -ReturnZeroExitCode
-    }
-}
-
-Describe "Phantomjs" {
-    It "phantomjs" {
-        $env:OPENSSL_CONF="/etc/ssl"
-        "phantomjs --version" | Should -ReturnZeroExitCode
     }
 }
 
