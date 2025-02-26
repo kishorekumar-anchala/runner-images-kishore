@@ -266,6 +266,7 @@
             "Microsoft.VisualStudio.Workload.VisualStudioExtension",
             "Component.MDD.Linux",
             "Component.MDD.Linux.GCC.arm",
+            "Microsoft.VisualStudio.Component.NuGet.BuildTools",
             "Component.Microsoft.Windows.DriverKit",
             "wasm.tools",
             "Microsoft.Component.MSBuild"
