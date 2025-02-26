@@ -42,7 +42,7 @@ Describe "Rust" {
         "cargo --version" | Should -ReturnZeroExitCode
     }
 
-    Context "Cargo dependencies" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+    Context "Cargo dependencies" -Skip:((-not (Test-IsUbuntu22))) {
         It "bindgen" {
             "bindgen --version" | Should -ReturnZeroExitCode
         }
@@ -154,7 +154,7 @@ Describe "Cmake" {
     }
 }
 
-Describe "erlang" -Skip:(-not (Test-IsUbuntu20)) {
+Describe "erlang" {
     $testCases = @("erl -version", "erlc -v", "rebar3 -v") | ForEach-Object { @{ErlangCommand = $_} }
 
     It "erlang <ErlangCommand>" -TestCases $testCases {
@@ -192,25 +192,25 @@ Describe "Mono" -Skip:(Test-IsUbuntu24) {
     }
 }
 
-Describe "MSSQLCommandLineTools" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "MSSQLCommandLineTools" -Skip:((-not (Test-IsUbuntu22))) {
     It "sqlcmd" {
         "sqlcmd -?" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "SqlPackage" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "SqlPackage" -Skip:((-not (Test-IsUbuntu22))) {
     It "sqlpackage" {
         "sqlpackage /version" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "R" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "R" -Skip:((-not (Test-IsUbuntu22))) {
     It "r" {
         "R --version" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "Sbt" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "Sbt" -Skip:((-not (Test-IsUbuntu22))) {
     It "sbt" {
         "sbt --version" | Should -ReturnZeroExitCode
     }
@@ -223,7 +223,7 @@ Describe "Selenium" {
     }
 }
 
-Describe "Terraform" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "Terraform" -Skip:((-not (Test-IsUbuntu22))) {
     It "terraform" {
         "terraform --version" | Should -ReturnZeroExitCode
     }
@@ -261,13 +261,13 @@ Describe "Git-lfs" {
     }
 }
 
-Describe "Heroku" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "Heroku" -Skip:((-not (Test-IsUbuntu22))) {
     It "heroku" {
         "heroku --version" | Should -ReturnZeroExitCode
     }
 }
 
-Describe "HHVM" -Skip:(-not (Test-IsUbuntu20)) {
+Describe "HHVM"{
     It "hhvm" {
         "hhvm --version" | Should -ReturnZeroExitCode
     }
@@ -307,7 +307,7 @@ Describe "Kubernetes tools" {
     }
 }
 
-Describe "Leiningen" -Skip:((-not (Test-IsUbuntu20)) -and (-not (Test-IsUbuntu22))) {
+Describe "Leiningen" -Skip:((-not (Test-IsUbuntu22))) {
     It "leiningen" {
         "lein --version" | Should -ReturnZeroExitCode
     }
@@ -331,7 +331,7 @@ Describe "Pulumi" {
     }
 }
 
-Describe "Phantomjs" -Skip:(-not (Test-IsUbuntu20)) {
+Describe "Phantomjs" {
     It "phantomjs" {
         $env:OPENSSL_CONF="/etc/ssl"
         "phantomjs --version" | Should -ReturnZeroExitCode

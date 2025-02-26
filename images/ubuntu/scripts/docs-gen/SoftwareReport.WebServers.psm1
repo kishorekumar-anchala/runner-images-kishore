@@ -46,9 +46,6 @@ function Get-Xsp4Version {
 function Build-WebServersTable {
     $servers = @()
     $servers += (Get-ApacheVersion)
-    if (Test-IsUbuntu20) {
-        $servers += (Get-Xsp4Version)
-    }
     $servers += (Get-NginxVersion)
 
     return $servers
