@@ -45,4 +45,11 @@ foreach ($module in $modules) {
 $psModuleMachinePath += $env:PSModulePath
 [Environment]::SetEnvironmentVariable("PSModulePath", $psModuleMachinePath, "Machine")
 
+# Ensure changes take immediate effect
+Write-Host "Updating current session PSModulePath to include C:\Modules..."
+$env:PSModulePath = $psModuleMachinePath
+
+# Validate the new PSModulePath
+Write-Host "`nCurrent PSModulePath:`n$($env:PSModulePath)"
+
 Invoke-PesterTests -TestFile "PowerShellAzModules" -TestName "AzureModules"
