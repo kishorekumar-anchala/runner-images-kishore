@@ -16,6 +16,9 @@ if is_ubuntu20; then
     
     # Install google-cloud-errors gem pinned to version 1.4.0
     gem install google-cloud-errors -v 1.4.0
+
+    # Install a compatible version of faraday-net_http for Ruby 2.7.0
+    gem install faraday-net_http -v 3.0.2
     
     # Install google-cloud-core gem pinned to version 1.7.1
     gem install google-cloud-core -v 1.7.1
