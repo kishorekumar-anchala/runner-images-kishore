@@ -19,7 +19,7 @@ if is_ubuntu20; then
     
       
     # Install google-cloud-core gem pinned to version 1.7.1
-    gem install google-cloud-core -v 1.7.1
+    gem install google-cloud-core -v 1.4.0
 
     gem install faraday-net_http -v 1.0.2
   
