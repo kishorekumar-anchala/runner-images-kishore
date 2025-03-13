@@ -22,8 +22,8 @@ if is_ubuntu20; then
 
     sudo gem install faraday -v 2.8.1
     
-    # Install google-cloud-core gem pinned to version 1.4.0
-    gem install google-cloud-core -v 1.4.0
+    # Install google-cloud-core gem pinned to version 1.7.1
+    gem install google-cloud-core -v 1.7.1
   
 fi
 
