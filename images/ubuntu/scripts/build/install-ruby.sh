@@ -28,7 +28,7 @@ if is_ubuntu20; then
     gem install grpc -v 1.58.0
 
     # Install googleauth gem pinned to version 1.4.0
-    gem install googleauth -v 1.4.0
+    # gem install googleauth -v 1.4.0
 
     # Install multi_json gem pinned to version 1.15.0
     gem install multi_json -v 1.15.0
