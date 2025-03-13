@@ -12,18 +12,30 @@ apt-get install ruby-full
 
 # temporary fix for fastlane installation https://github.com/sporkmonger/addressable/issues/541
 if is_ubuntu20; then
-    gem install public_suffix -v 5.1.1
-    
     # Install google-cloud-errors gem pinned to version 1.4.0
     gem install google-cloud-errors -v 1.4.0
-  
 
+    # Install faraday-net_http gem pinned to version 3.0.2
     gem install faraday-net_http -v 3.0.2
 
-    sudo gem install faraday -v 2.8.1
-    
+    # Install faraday gem pinned to version 2.8.1
+    gem install faraday -v 2.8.1
+
+    # Install google-cloud-env gem pinned to version 2.1.1
+    gem install google-cloud-env -v 2.1.1
+
+    # Install grpc gem pinned to version 1.58.0
+    gem install grpc -v 1.58.0
+
+    # Install googleauth gem pinned to version 1.4.0
+    gem install googleauth -v 1.4.0
+
+    # Install multi_json gem pinned to version 1.15.0
+    gem install multi_json -v 1.15.0
+
     # Install google-cloud-core gem pinned to version 1.7.1
     gem install google-cloud-core -v 1.7.1
+
   
 fi
 
