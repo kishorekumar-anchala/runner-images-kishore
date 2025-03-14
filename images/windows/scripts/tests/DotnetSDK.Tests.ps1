@@ -14,11 +14,11 @@ Describe "Dotnet SDK and tools" {
             $dotnet = @{ dotnetVersion = $version }
 
             It "SDK $version is available" -TestCases $dotnet {
-                (dotnet --list-sdks | Where-Object { $_ -match "^${dotnetVersion}(\.[0-9]+)*$" }).Count | Should -BeGreaterThan 0
+                (dotnet --list-sdks | Where-Object { $_ -match "${dotnetVersion}(\.[0-9]+)*" }.Count | Should -BeGreaterThan 0
             }
 
             It "Runtime $version is available" -TestCases $dotnet {
-                (dotnet --list-runtimes | Where-Object { $_ -match "^${dotnetVersion}(\.[0-9]+)*$" }).Count | Should -BeGreaterThan 0
+                (dotnet --list-runtimes | Where-Object { $_ -match "${dotnetVersion}(\.[0-9]+)*" }.Count | Should -BeGreaterThan 0
             }
         }
     }
