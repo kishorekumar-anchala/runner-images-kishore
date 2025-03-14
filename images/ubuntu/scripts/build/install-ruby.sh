@@ -12,6 +12,8 @@ apt-get install ruby-full
 
 # temporary fix for fastlane installation https://github.com/sporkmonger/addressable/issues/541
 if is_ubuntu20; then
+
+    gem install public_suffix -v 5.1.1
     # Install google-cloud-errors gem pinned to version 1.4.0
     gem install google-cloud-errors -v 1.4.0
 
