@@ -26,17 +26,17 @@ if is_ubuntu20; then
     # Install google-cloud-env gem pinned to version 2.1.1
     gem install google-cloud-env -v 2.1.1
 
+    # Install google-cloud-core gem pinned to version 1.7.1
+    gem install google-cloud-core -v 1.7.1
+
     # Install grpc gem pinned to version 1.58.0
-    gem install grpc -v 1.58.0
+    # gem install grpc -v 1.58.0
 
     # Install googleauth gem pinned to version 1.4.0
     # gem install googleauth -v 1.4.0
 
     # Install multi_json gem pinned to version 1.15.0
-    gem install multi_json -v 1.15.0
-
-    # Install google-cloud-core gem pinned to version 1.7.1
-    gem install google-cloud-core -v 1.7.1
+    # gem install multi_json -v 1.15.0
 
   
 fi
