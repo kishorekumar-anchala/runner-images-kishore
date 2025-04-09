@@ -231,7 +231,7 @@ $browsersTools.AddHeader("Environment variables").AddTable($(Build-BrowserWebdri
 
 # .NET Tools
 $netCoreTools = $installedSoftware.AddHeader(".NET Tools")
-$netCoreTools.AddToolVersionsListInline(".NET Core SDK", $(Get-DotNetCoreSdkVersions), "^\d+\.\d+\.\d")
+$netCoreTools.AddToolVersionsListInline(".NET Core SDK", $(Get-DotNetCoreSdkVersions), "^\d+\.\d+\.\d{2}")
 $netCoreTools.AddNodes($(Get-DotnetTools))
 
 # Databases
