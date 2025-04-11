@@ -5,6 +5,10 @@
 ################################################################################
 
 function Install-WindowsUpdates {
+
+    Stop-Service wuauserv
+    Remove-Item -Path C:\Windows\SoftwareDistribution -Recurse -Force 
+
     Write-Host "Starting wuauserv"
     Start-Service -Name wuauserv -PassThru | Out-Host
 
@@ -19,7 +23,7 @@ function Install-WindowsUpdates {
     }
 
     Write-Host "Installing windows updates"
-    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID "KB5034439" -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
+    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID @("KB5034439", "KB5055523") -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
 
     Write-Host "Validating windows updates installation"
     # Get-WUHistory doesn't support Windows Server 2022
@@ -31,8 +35,6 @@ function Install-WindowsUpdates {
         throw "Windows updates failed to install: $($failedUpdates.KB)"
     }
 
-    Write-Host "KB updates validated successfully. Restarting now..."
-    Restart-Computer -Force -NoWait
 }
 
 Install-WindowsUpdates
