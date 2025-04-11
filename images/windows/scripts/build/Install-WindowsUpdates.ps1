@@ -19,7 +19,7 @@ function Install-WindowsUpdates {
     }
 
     Write-Host "Installing windows updates"
-    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID @("KB5034439", "KB5055523") -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
+    Get-WindowsUpdate -MicrosoftUpdate -NotKBArticleID "KB5034439" -AcceptAll -Install -IgnoreUserInput -IgnoreReboot | Out-Host
 
     Write-Host "Validating windows updates installation"
     # Get-WUHistory doesn't support Windows Server 2022
@@ -30,6 +30,9 @@ function Install-WindowsUpdates {
     if ( $failedUpdates ) {
         throw "Windows updates failed to install: $($failedUpdates.KB)"
     }
+
+    Write-Host "KB updates validated successfully. Restarting now..."
+    Restart-Computer -Force -NoWait
 }
 
 Install-WindowsUpdates
