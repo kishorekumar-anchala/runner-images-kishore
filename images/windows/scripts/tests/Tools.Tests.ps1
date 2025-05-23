@@ -204,9 +204,19 @@ Describe "Kotlin" {
     $kotlinPackages = @("kapt", "kotlin", "kotlinc", "kotlinc-js", "kotlinc-jvm")
 
     It "<toolName> is available" -TestCases ($kotlinPackages | ForEach-Object { @{ toolName = $_ } }) {
-        "$toolName -version" | Should -ReturnZeroExitCode
+        if ($toolName -eq "kapt") {
+            $cmd = "kapt -version -Kapt-mode=stubsAndApt"
+        }
+        elseif ($toolName -eq "kotlinc-js") {
+            $cmd = "kotlinc-js -version -Xir-module-name=test -ir-output-name=test.js -ir-output-dir=."
+        }
+        else {
+            $cmd = "$toolName -version"
+        }
+        $cmd | Should -ReturnZeroExitCode
     }
 }
+
 
 Describe "SQL OLEDB Driver" {
     It "SQL OLEDB Driver" {
