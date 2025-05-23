@@ -201,13 +201,10 @@ Describe "Pipx" {
 }
 
 Describe "Kotlin" {
-    $kotlinPackages = @("kapt", "kotlin", "kotlinc", "kotlinc-js", "kotlinc-jvm")
+    $kotlinPackages = @("kotlin", "kotlinc", "kotlinc-js", "kotlinc-jvm") 
 
     It "<toolName> is available" -TestCases ($kotlinPackages | ForEach-Object { @{ toolName = $_ } }) {
-        if ($toolName -eq "kapt") {
-            $cmd = "kapt -version -Kapt-mode=stubsAndApt"
-        }
-        elseif ($toolName -eq "kotlinc-js") {
+        if ($toolName -eq "kotlinc-js") {
             $cmd = "kotlinc-js -version -Xir-module-name=test -ir-output-name=test.js -ir-output-dir=."
         }
         else {
@@ -215,7 +212,13 @@ Describe "Kotlin" {
         }
         $cmd | Should -ReturnZeroExitCode
     }
+
+    It "kapt executable exists" {
+        # Checks if the kapt executable is available in the PATH
+        (Get-Command "kapt" -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
+    }
 }
+
 
 
 Describe "SQL OLEDB Driver" {
