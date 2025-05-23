@@ -9,7 +9,7 @@ Describe "Disk free space" -Skip:(-not [String]::IsNullOrEmpty($env:AGENT_NAME) 
 
 Describe "fwupd removed" {
     It "Is not present on box" {
-        $systemctlOutput = & systemctl is-enabled fwupd-refresh.timer
-        $systemctlOutput | Should -BeExactly "masked"
+        $systemctlOutput = & systemctl list-unit-files fwupd-refresh.timer --no-legend
+        $systemctlOutput | Should -Match "masked"
     }
 }
