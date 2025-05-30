@@ -201,21 +201,21 @@ Describe "Pipx" {
 }
 
 Describe "Kotlin" {
-    $kotlinPackages = @("kotlin", "kotlinc", "kotlinc-js", "kotlinc-jvm") 
+    $kotlinPackages = @("kotlin", "kotlinc", "kotlinc-js", "kotlinc-jvm", "kapt") 
 
     It "<toolName> is available" -TestCases ($kotlinPackages | ForEach-Object { @{ toolName = $_ } }) {
         if ($toolName -eq "kotlinc-js") {
             $cmd = "kotlinc-js -version -Xir-module-name=test -ir-output-name=test.js -ir-output-dir=."
+            $cmd | Should -ReturnZeroExitCode
+        }
+        elseif ($toolName -eq "kapt") {
+            # Checks if the kapt executable is available in the PATH
+            (Get-Command "kapt" -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
         }
         else {
             $cmd = "$toolName -version"
+            $cmd | Should -ReturnZeroExitCode
         }
-        $cmd | Should -ReturnZeroExitCode
-    }
-
-    It "kapt executable exists" {
-        # Checks if the kapt executable is available in the PATH
-        (Get-Command "kapt" -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
     }
 }
 
