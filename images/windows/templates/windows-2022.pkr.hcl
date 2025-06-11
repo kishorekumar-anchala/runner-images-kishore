@@ -286,49 +286,91 @@ build {
  provisioner "powershell" {
   inline = [
     "Write-Host '=== CLEANUP START ==='",
+
     "Try {",
 
-    "  Write-Host 'Moving post-gen to C:\\post-generation...'",
-    "  Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\" -Force",
+      # Move post-gen to C:\post-generation
+      "  if (Test-Path \"${var.image_folder}\\assets\\post-gen\") {",
+      "    Write-Host 'Moving post-gen to C:\\post-generation...'",
+      "    Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\" -Force",
+      "    if (Test-Path \"C:\\post-generation\\\") { Write-Host '[SUCCESS] post-gen moved successfully.' }",
+      "    else { Write-Host '[WARN] post-gen move failed!' }",
+      "  } else { Write-Host '[INFO] post-gen folder not found. Skipping.' }",
 
-    "  Write-Host 'Removing assets folder...'",
-    "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\assets\" -ErrorAction SilentlyContinue",
+      # Remove assets
+      "  if (Test-Path \"${var.image_folder}\\assets\") {",
+      "    Write-Host 'Removing assets folder...'",
+      "    Remove-Item -Recurse -Force -Path \"${var.image_folder}\\assets\" -ErrorAction SilentlyContinue",
+      "  }",
 
-    "  Write-Host 'Creating SoftwareReport directory...'",
-    "  New-Item -ItemType Directory -Force -Path \"${var.image_folder}\\SoftwareReport\" | Out-Null",
+      # Create SoftwareReport
+      "  Write-Host 'Creating SoftwareReport directory...'",
+      "  New-Item -ItemType Directory -Force -Path \"${var.image_folder}\\SoftwareReport\" | Out-Null",
 
-    "  Write-Host 'Moving files from docs-gen to SoftwareReport...'",
-    "  Get-ChildItem -Path \"${var.image_folder}\\scripts\\docs-gen\" | ForEach-Object { Move-Item -Path $_.FullName -Destination \"${var.image_folder}\\SoftwareReport\" -Force }",
+      # Move docs-gen files
+      "  if (Test-Path \"${var.image_folder}\\scripts\\docs-gen\") {",
+      "    Write-Host 'Moving files from docs-gen to SoftwareReport...'",
+      "    Get-ChildItem -Path \"${var.image_folder}\\scripts\\docs-gen\" | ForEach-Object {",
+      "      $dest = Join-Path \"${var.image_folder}\\SoftwareReport\" $_.Name",
+      "      Move-Item -Path $_.FullName -Destination $dest -Force",
+      "      if (Test-Path $dest) { Write-Host \"[SUCCESS] Moved: $($_.Name)\" }",
+      "      else { Write-Host \"[WARN] Failed to move: $($_.Name)\" }",
+      "    }",
+      "    Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\\docs-gen\" -ErrorAction SilentlyContinue",
+      "  } else { Write-Host '[INFO] docs-gen folder not found. Skipping.' }",
 
-    "  Write-Host 'Removing docs-gen folder...'",
-    "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\\docs-gen\" -ErrorAction SilentlyContinue",
+      # Move helpers
+      "  if (Test-Path \"${var.image_folder}\\scripts\\helpers\") {",
+      "    Write-Host 'Moving helpers to ImageHelpers module...'",
+      "    Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\" -Force",
+      "    if (Test-Path \"${var.helper_script_folder}\\ImageHelpers\") { Write-Host '[SUCCESS] helpers moved.' }",
+      "    else { Write-Host '[WARN] helpers move failed!' }",
+      "  } else { Write-Host '[INFO] helpers folder not found. Skipping.' }",
 
-    "  Write-Host 'Moving helpers to ImageHelpers module...'",
-    "  Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\" -Force",
+      # Create TestsHelpers
+      "  Write-Host 'Creating TestsHelpers module directory...'",
+      "  New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -Force | Out-Null",
 
-    "  Write-Host 'Creating TestsHelpers module directory...'",
-    "  New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\" -Force | Out-Null",
+      # Move Helpers.psm1
+      "  if (Test-Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\") {",
+      "    Write-Host 'Moving Helpers.psm1 to TestsHelpers module...'",
+      "    Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\" -Force",
+      "    if (Test-Path \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\") { Write-Host '[SUCCESS] Helpers.psm1 moved.' }",
+      "    else { Write-Host '[WARN] Helpers.psm1 move failed!' }",
+      "  } else { Write-Host '[INFO] Helpers.psm1 not found. Skipping.' }",
 
-    "  Write-Host 'Moving Helpers.psm1 to TestsHelpers module...'",
-    "  Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\" -Force",
+      # Move tests folder
+      "  if (Test-Path \"${var.image_folder}\\scripts\\tests\") {",
+      "    Write-Host 'Moving tests folder...'",
+      "    Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\" -Force",
+      "    if (Test-Path \"${var.image_folder}\\tests\") { Write-Host '[SUCCESS] tests moved.' }",
+      "    else { Write-Host '[WARN] tests move failed!' }",
+      "  } else { Write-Host '[INFO] tests folder not found. Skipping.' }",
 
-    "  Write-Host 'Moving tests folder...'",
-    "  Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\" -Force",
+      # Remove scripts folder
+      "  if (Test-Path \"${var.image_folder}\\scripts\") {",
+      "    Write-Host 'Removing scripts folder...'",
+      "    Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\" -ErrorAction SilentlyContinue",
+      "  }",
 
-    "  Write-Host 'Removing scripts folder...'",
-    "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\" -ErrorAction SilentlyContinue",
+      # Move toolset file
+      "  if (Test-Path \"${var.image_folder}\\toolsets\\toolset-2022.json\") {",
+      "    Write-Host 'Renaming toolset-2022.json to toolset.json...'",
+      "    Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\" -Force",
+      "    if (Test-Path \"${var.image_folder}\\toolset.json\") { Write-Host '[SUCCESS] toolset.json moved.' }",
+      "    else { Write-Host '[WARN] toolset rename failed!' }",
+      "  } else { Write-Host '[INFO] toolset-2022.json not found. Skipping.' }",
 
-    "  Write-Host 'Renaming toolset-2022.json to toolset.json...'",
-    "  Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\" -Force",
+      # Remove toolsets
+      "  if (Test-Path \"${var.image_folder}\\toolsets\") {",
+      "    Write-Host 'Removing toolsets folder...'",
+      "    Remove-Item -Recurse -Path \"${var.image_folder}\\toolsets\" -ErrorAction SilentlyContinue",
+      "  }",
 
-    "  Write-Host 'Removing toolsets folder...'",
-    "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\toolsets\" -ErrorAction SilentlyContinue",
-
-    "} Catch {",
-    "  Write-Host 'ERROR: Cleanup failed:'",
-    "  Write-Host $_",
-    "  Exit 1",
-    "}",
+      "} Catch {",
+      "  Write-Error \"Provisioning script failed: $_\"",
+      "  Exit 1",
+      "}",
 
     "Write-Host '=== CLEANUP COMPLETE ==='"
   ]
