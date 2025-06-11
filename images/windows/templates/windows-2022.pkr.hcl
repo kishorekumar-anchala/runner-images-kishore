@@ -281,13 +281,6 @@ build {
 
   provisioner "powershell" {
     inline = [
-      # Ensure required directories exist before moving items
-      "if (-not (Test-Path -Path 'C:\\post-generation')) { New-Item -Path 'C:\\post-generation' -ItemType Directory -Force }",
-      "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
-      "if (-not (Test-Path -Path \"${var.helper_script_folder}\\ImageHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\ImageHelpers\" -ItemType Directory -Force }",
-      "if (-not (Test-Path -Path \"${var.image_folder}\\SoftwareReport\")) { New-Item -Path \"${var.image_folder}\\SoftwareReport\" -ItemType Directory -Force }",
-      "if (-not (Test-Path -Path \"${var.image_folder}\\tests\")) { New-Item -Path \"${var.image_folder}\\tests\" -ItemType Directory -Force }",
-
       # Move post-gen assets to post-generation
       "if (Test-Path -Path \"${var.image_folder}\\assets\\post-gen\") { Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\" } else { Write-Host 'WARNING: post-gen not found, skipping move.' }",
 
