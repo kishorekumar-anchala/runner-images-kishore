@@ -261,7 +261,7 @@ build {
 
   provisioner "powershell" {
     inline = [
-      "New-Item -Path @('${var.image_folder}', '${var.temp_dir}') -ItemType Directory -Force"
+      "foreach ($dir in @('${var.image_folder}', '${var.temp_dir}')) { New-Item -Path $dir -ItemType Directory -Force }"
     ]
   }
 
