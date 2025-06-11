@@ -281,6 +281,8 @@ build {
 
   provisioner "powershell" {
     inline = [
+      # Ensure required directories exist before moving itemsAdd commentMore actions
+      New-Item -Path @("C:\post-generation", "${var.helper_script_folder}\\TestsHelpers\\") -ItemType Directory -Force,
       "Move-Item '${var.image_folder}\\assets\\post-gen' 'C:\\post-generation'",
       "Remove-Item -Recurse '${var.image_folder}\\assets'",
       "Move-Item '${var.image_folder}\\scripts\\docs-gen' '${var.image_folder}\\SoftwareReport'",
