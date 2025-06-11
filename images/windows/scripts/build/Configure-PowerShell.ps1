@@ -12,6 +12,11 @@ Write-Host "Setup PowerShellGet"
 # Manually install NuGet package provider
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser
 
+# Ensure PSGallery repository exists before setting policy
+if (-not (Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) {
+    Write-Host "Registering PSGallery repository..."
+    Register-PSRepository -Default
+}
 
 # Specifies the installation policy
 Set-PSRepository -InstallationPolicy Trusted -Name PSGallery
