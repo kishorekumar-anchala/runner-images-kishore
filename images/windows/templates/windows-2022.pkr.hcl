@@ -281,7 +281,7 @@ build {
 
   provisioner "powershell" {
     inline = [
-      # Ensure required directories exist before moving items
+      # Create required directories one at a time
       "if (-not (Test-Path -Path 'C:\\post-generation')) { New-Item -Path 'C:\\post-generation' -ItemType Directory -Force }",
       "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
 
@@ -297,7 +297,7 @@ build {
       # Move helpers to ImageHelpers
       "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
 
-      # Ensure TestsHelpers directory exists (redundant, but safe)
+      # Ensure TestsHelpers directory exists (again, safe redundancy)
       "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
 
       # Move Helpers.psm1 to TestsHelpers.psm1
