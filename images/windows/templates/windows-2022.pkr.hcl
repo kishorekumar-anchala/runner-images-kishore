@@ -283,12 +283,18 @@ build {
     inline = [
       "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
       "Remove-Item -Recurse -Path \"${var.image_folder}\\assets\"",
-      "Move-Item -Path \"${var.image_folder}\\scripts\\docs-gen\" -Destination \"${var.image_folder}\\SoftwareReport\"",
+
+      # Create SoftwareReport folder and move contents of docs-gen
+      "New-Item -ItemType Directory -Path \"${var.image_folder}\\SoftwareReport\" -Force",
+      "Move-Item -Path \"${var.image_folder}\\scripts\\docs-gen\\*\" -Destination \"${var.image_folder}\\SoftwareReport\"",
+      "Remove-Item -Recurse -Path \"${var.image_folder}\\scripts\\docs-gen\"",
+
       "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
-      "New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\"",
+      "New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -Force",
       "Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\"",
       "Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\"",
       "Remove-Item -Recurse -Path \"${var.image_folder}\\scripts\"",
+
       "Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\"",
       "Remove-Item -Recurse -Path \"${var.image_folder}\\toolsets\""
 
