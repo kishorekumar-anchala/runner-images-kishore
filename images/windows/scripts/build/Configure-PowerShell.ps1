@@ -12,8 +12,6 @@ Write-Host "Setup PowerShellGet"
 # Manually install NuGet package provider
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser
 
-# Register PSGallery repository to ensure availability
-Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2
 
 # Specifies the installation policy
 Set-PSRepository -InstallationPolicy Trusted -Name PSGallery
