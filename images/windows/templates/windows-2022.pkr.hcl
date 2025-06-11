@@ -275,7 +275,7 @@ build {
   }
 
   provisioner "file" {
-    destination = "${var.image_folder}\\SoftwareReport\\"
+    destination = "${var.image_folder}\\scripts\\docs-gen\\"
     source      = "${path.root}/../../../helpers/software-report-base"
   }
 
@@ -283,6 +283,9 @@ build {
     inline = [
       "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
       "Remove-Item -Recurse -Path \"${var.image_folder}\\assets\"",
+      "New-Item -ItemType Directory -Force -Path \"${var.image_folder}\\SoftwareReport\"",
+      "Get-ChildItem -Path \"${var.image_folder}\\scripts\\docs-gen\" | ForEach-Object { Move-Item -Path $_.FullName -Destination \"${var.image_folder}\\SoftwareReport\" }",
+      "Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\\docs-gen\"",
       "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
       "New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -Force",
       "Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\"",
