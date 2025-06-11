@@ -281,38 +281,18 @@ build {
 
   provisioner "powershell" {
     inline = [
-      # Create required directories one at a time
+      # Create required directories individually
       "if (-not (Test-Path -Path 'C:\\post-generation')) { New-Item -Path 'C:\\post-generation' -ItemType Directory -Force }",
       "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
 
-      # Move post-gen assets to post-generation
       "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
-
-      # Remove the assets directory
       "Remove-Item -Path \"${var.image_folder}\\assets\" -Recurse -Force",
-
-      # Move docs-gen to SoftwareReport
       "Move-Item -Path \"${var.image_folder}\\scripts\\docs-gen\" -Destination \"${var.image_folder}\\SoftwareReport\"",
-
-      # Move helpers to ImageHelpers
       "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
-
-      # Ensure TestsHelpers directory exists (again, safe redundancy)
-      "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
-
-      # Move Helpers.psm1 to TestsHelpers.psm1
       "Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\"",
-
-      # Move tests directory
       "Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\"",
-
-      # Remove the scripts directory
       "Remove-Item -Path \"${var.image_folder}\\scripts\" -Recurse -Force",
-
-      # Move toolset-2022.json to toolset.json
       "Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\"",
-
-      # Remove the toolsets directory
       "Remove-Item -Path \"${var.image_folder}\\toolsets\" -Recurse -Force"
     ]
   }
