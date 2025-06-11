@@ -282,7 +282,7 @@ build {
   provisioner "powershell" {
     inline = [
         # Ensure required directories exist before moving items
-      "foreach ($dir in @(\"C:\\post-generation\", \"${var.helper_script_folder}\\TestsHelpers\\\")) { New-Item -Path $dir -ItemType Directory -Force }",
+      # "foreach ($dir in @(\"C:\\post-generation\", \"${var.helper_script_folder}\\TestsHelpers\\\")) { New-Item -Path $dir -ItemType Directory -Force }",
 
       # Move post-gen assets to post-generation
       "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
