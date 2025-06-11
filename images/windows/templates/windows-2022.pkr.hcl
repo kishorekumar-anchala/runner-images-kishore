@@ -281,32 +281,17 @@ build {
 
   provisioner "powershell" {
     inline = [
-      # Move post-gen assets to post-generation
-      "if (Test-Path -Path \"${var.image_folder}\\assets\\post-gen\") { Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\" } else { Write-Host 'WARNING: post-gen not found, skipping move.' }",
+      "Move-Item -Path '${var.image_folder}\\assets\\post-gen' -Destination 'C:\\post-generation'",
+      "Remove-Item -Recurse -Path '${var.image_folder}\\assets'",
+      "Move-Item -Path '${var.image_folder}\\scripts\\docs-gen' -Destination '${var.image_folder}\\SoftwareReport'",
+      "Move-Item -Path '${var.image_folder}\\scripts\\helpers' -Destination '${var.helper_script_folder}\\ImageHelpers'",
+      "New-Item -Type Directory -Path '${var.helper_script_folder}\\TestsHelpers\\'",
+      "Move-Item -Path '${var.image_folder}\\scripts\\tests\\Helpers.psm1' -Destination '${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1'",
+      "Move-Item -Path '${var.image_folder}\\scripts\\tests' -Destination '${var.image_folder}\\tests'",
+      "Remove-Item -Recurse -Path '${var.image_folder}\\scripts'",
+      "Move-Item -Path '${var.image_folder}\\toolsets\\toolset-2022.json' -Destination '${var.image_folder}\\toolset.json'",
+      "Remove-Item -Recurse -Path '${var.image_folder}\\toolsets'"
 
-      # Remove the assets directory
-      "if (Test-Path -Path \"${var.image_folder}\\assets\") { Remove-Item -Path \"${var.image_folder}\\assets\" -Recurse -Force }",
-
-      # Move docs-gen to SoftwareReport
-      "if (Test-Path -Path \"${var.image_folder}\\scripts\\docs-gen\") { Move-Item -Path \"${var.image_folder}\\scripts\\docs-gen\" -Destination \"${var.image_folder}\\SoftwareReport\" } else { Write-Host 'WARNING: docs-gen not found, skipping move.' }",
-
-      # Move helpers to ImageHelpers
-      "if (Test-Path -Path \"${var.image_folder}\\scripts\\helpers\") { Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\" } else { Write-Host 'WARNING: helpers not found, skipping move.' }",
-
-      # Move Helpers.psm1 to TestsHelpers.psm1
-      "if (Test-Path -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\") { Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\" } else { Write-Host 'WARNING: Helpers.psm1 not found, skipping move.' }",
-
-      # Move tests directory
-      "if (Test-Path -Path \"${var.image_folder}\\scripts\\tests\") { Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\" } else { Write-Host 'WARNING: tests directory not found, skipping move.' }",
-
-      # Remove the scripts directory
-      "if (Test-Path -Path \"${var.image_folder}\\scripts\") { Remove-Item -Path \"${var.image_folder}\\scripts\" -Recurse -Force }",
-
-      # Move toolset-2022.json to toolset.json
-      "if (Test-Path -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\") { Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\" } else { Write-Host 'WARNING: toolset-2022.json not found, skipping move.' }",
-
-      # Remove the toolsets directory
-      "if (Test-Path -Path \"${var.image_folder}\\toolsets\") { Remove-Item -Path \"${var.image_folder}\\toolsets\" -Recurse -Force }"
     ]
   }
 
