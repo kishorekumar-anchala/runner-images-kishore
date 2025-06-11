@@ -282,8 +282,8 @@ build {
   provisioner "powershell" {
     inline = [
       # Create required directories individually
-      "if (-not (Test-Path -Path 'C:\\post-generation')) { New-Item -Path 'C:\\post-generation' -ItemType Directory -Force }",
-      "if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
+      #"if (-not (Test-Path -Path 'C:\\post-generation')) { New-Item -Path 'C:\\post-generation' -ItemType Directory -Force }",
+      #"if (-not (Test-Path -Path \"${var.helper_script_folder}\\TestsHelpers\")) { New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\" -ItemType Directory -Force }",
 
       "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
       "Remove-Item -Path \"${var.image_folder}\\assets\" -Recurse -Force",
