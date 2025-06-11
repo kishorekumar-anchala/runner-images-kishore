@@ -285,18 +285,24 @@ build {
 
   provisioner "powershell" {
     inline = [
-      "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
-      "Remove-Item -Recurse -Path \"${var.image_folder}\\assets\"",
-      "New-Item -ItemType Directory -Force -Path \"${var.image_folder}\\SoftwareReport\"",
-      "Get-ChildItem -Path \"${var.image_folder}\\scripts\\docs-gen\" | ForEach-Object { Move-Item -Path $_.FullName -Destination \"${var.image_folder}\\SoftwareReport\" }",
-      "Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\\docs-gen\"",
-      "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
-      "New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -Force",
-      "Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\"",
-      "Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\"",
-      "Remove-Item -Recurse -Path \"${var.image_folder}\\scripts\"",
-      "Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\"",
-      "Remove-Item -Recurse -Path \"${var.image_folder}\\toolsets\""
+      "Write-Host '=== CLEANUP START ==='",
+
+      "Try {",
+            "  Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\" -Force",
+            "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\assets\" -ErrorAction SilentlyContinue",
+            "  New-Item -ItemType Directory -Force -Path \"${var.image_folder}\\SoftwareReport\" | Out-Null",
+            "  Get-ChildItem -Path \"${var.image_folder}\\scripts\\docs-gen\" | ForEach-Object { Move-Item -Path $_.FullName -Destination \"${var.image_folder}\\SoftwareReport\" -Force }",
+            "  Remove-Item -Recurse -Force -Path \"${var.image_folder}\\scripts\\docs-gen\" -ErrorAction SilentlyContinue",
+            "  Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\" -Force",
+            "  New-Item -ItemType Directory -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -Force | Out-Null",
+            "  Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\" -Force",
+            "  Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\" -Force",
+            "  Remove-Item -Recurse -Path \"${var.image_folder}\\scripts\" -ErrorAction SilentlyContinue",
+            "  Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\" -Force",
+            "  Remove-Item -Recurse -Path \"${var.image_folder}\\toolsets\" -ErrorAction SilentlyContinue",
+        "} Catch { Write-Error \"Provisioning script failed: $_\"; Exit 1 }",
+
+      "Write-Host '=== CLEANUP COMPLETE ==='"
 
     ]
   }
