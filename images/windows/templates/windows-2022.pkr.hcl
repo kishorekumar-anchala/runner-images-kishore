@@ -281,20 +281,40 @@ build {
 
   provisioner "powershell" {
     inline = [
-      # Ensure required directories exist before moving items
-      "foreach ($dir in @('C:\\post-generation', '${var.helper_script_folder}\\TestsHelpers\\')) { New-Item -Path $dir -ItemType Directory -Force }",
-      "Move-Item '${var.image_folder}\\assets\\post-gen' 'C:\\post-generation'",
-      "Remove-Item -Recurse '${var.image_folder}\\assets'",
-      "Move-Item '${var.image_folder}\\scripts\\docs-gen' '${var.image_folder}\\SoftwareReport'",
-      "Move-Item '${var.image_folder}\\scripts\\helpers' '${var.helper_script_folder}\\ImageHelpers'",
-      "New-Item -Type Directory -Path '${var.helper_script_folder}\\TestsHelpers\\'",
-      "Move-Item '${var.image_folder}\\scripts\\tests\\Helpers.psm1' '${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1'",
-      "Move-Item '${var.image_folder}\\scripts\\tests' '${var.image_folder}\\tests'",
-      "Remove-Item -Recurse '${var.image_folder}\\scripts'",
-      "Move-Item '${var.image_folder}\\toolsets\\toolset-2022.json' '${var.image_folder}\\toolset.json'",
-      "Remove-Item -Recurse '${var.image_folder}\\toolsets'"
+        # Ensure required directories exist before moving items
+      "foreach ($dir in @(\"C:\\post-generation\", \"${var.helper_script_folder}\\TestsHelpers\\\")) { New-Item -Path $dir -ItemType Directory -Force }",
+
+      # Move post-gen assets to post-generation
+      "Move-Item -Path \"${var.image_folder}\\assets\\post-gen\" -Destination \"C:\\post-generation\"",
+
+      # Remove the assets directory
+      "Remove-Item -Path \"${var.image_folder}\\assets\" -Recurse -Force",
+
+      # Move docs-gen to SoftwareReport
+      "Move-Item -Path \"${var.image_folder}\\scripts\\docs-gen\" -Destination \"${var.image_folder}\\SoftwareReport\"",
+
+      # Move helpers to ImageHelpers
+      "Move-Item -Path \"${var.image_folder}\\scripts\\helpers\" -Destination \"${var.helper_script_folder}\\ImageHelpers\"",
+
+      # Ensure TestsHelpers directory exists (redundant, but safe)
+      "New-Item -Path \"${var.helper_script_folder}\\TestsHelpers\\\" -ItemType Directory -Force",
+
+      # Move Helpers.psm1 to TestsHelpers.psm1
+      "Move-Item -Path \"${var.image_folder}\\scripts\\tests\\Helpers.psm1\" -Destination \"${var.helper_script_folder}\\TestsHelpers\\TestsHelpers.psm1\"",
+
+      # Move tests directory
+      "Move-Item -Path \"${var.image_folder}\\scripts\\tests\" -Destination \"${var.image_folder}\\tests\"",
+
+      # Remove the scripts directory
+      "Remove-Item -Path \"${var.image_folder}\\scripts\" -Recurse -Force",
+
+      # Move toolset-2022.json to toolset.json
+      "Move-Item -Path \"${var.image_folder}\\toolsets\\toolset-2022.json\" -Destination \"${var.image_folder}\\toolset.json\"",
+
+      # Remove the toolsets directory
+      "Remove-Item -Path \"${var.image_folder}\\toolsets\" -Recurse -Force"
     ]
- }
+  }
 
 
   provisioner "windows-shell" {
