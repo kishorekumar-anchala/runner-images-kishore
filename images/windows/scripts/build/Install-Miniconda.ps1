@@ -5,22 +5,33 @@
 ################################################################################
 
 $condaDestination = "C:\Miniconda"
-$installerName = "Miniconda3-latest-Windows-x86_64.exe"
+$installerUrl = "https://repo.anaconda.com/miniconda/$installerName"
+$installerPath = "$env:TEMP\$installerName"
 
 #region Supply chain security
 $distributorFileHash = $null
-$checksums = (ConvertFrom-HTML -Uri 'https://repo.anaconda.com/miniconda/').SelectNodes('//html/body/table/tr')
+$response = Invoke-WebRequest -Uri 'https://repo.anaconda.com/miniconda/' -UseBasicParsing
+$pattern = "$installerName.*?([a-fA-F0-9]{64})"
+$match = [regex]::Match($response.Content, $pattern)
 
-foreach ($node in $checksums) {
-    if ($node.ChildNodes[0].InnerText -eq $installerName) {
-        $distributorFileHash = $node.ChildNodes[3].InnerText
-    }
-}
-
-if ($null -eq $distributorFileHash) {
+if ($match.Success) {
+    $distributorFileHash = $match.Groups[1].Value
+} else {
     throw "Unable to find checksum for $installerName in https://repo.anaconda.com/miniconda/"
 }
 #endregion
+
+# Download installer
+Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
+
+# SHA256 validation block (added)
+$calculatedHash = (Get-FileHash -Path $installerPath -Algorithm SHA256).Hash.ToLower()
+
+if ($calculatedHash -ne $distributorFileHash.ToLower()) {
+    throw "SHA256 hash mismatch! Expected: $distributorFileHash, Got: $calculatedHash"
+} else {
+    Write-Host "SHA256 hash verified."
+}
 
 Install-Binary `
     -Url "https://repo.anaconda.com/miniconda/${installerName}" `
