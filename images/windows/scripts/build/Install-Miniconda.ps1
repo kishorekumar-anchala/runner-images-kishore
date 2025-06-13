@@ -12,8 +12,8 @@ $distributorFileHash = $null
 $checksums = (ConvertFrom-HTML -Uri 'https://repo.anaconda.com/miniconda/').SelectNodes('//html/body/table/tr')
 
 foreach ($node in $checksums) {
-    if ($node.ChildNodes[1].InnerText -eq $installerName) {
-        $distributorFileHash = $node.ChildNodes[7].InnerText
+    if ($node.ChildNodes[0].InnerText -eq $installerName) {
+        $distributorFileHash = $node.ChildNodes[3].InnerText
     }
 }
 
