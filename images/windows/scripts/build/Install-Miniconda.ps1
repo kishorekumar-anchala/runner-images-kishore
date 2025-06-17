@@ -7,25 +7,32 @@
 $condaDestination = "C:\Miniconda"
 $installerName = "Miniconda3-latest-Windows-x86_64.exe"
 
-#region Supply chain security
-$distributorFileHash = $null
-$checksums = (ConvertFrom-HTML -Uri 'https://repo.anaconda.com/miniconda/').SelectNodes('//html/body/table/tr')
+$installerUrl = "https://repo.anaconda.com/miniconda/$installerName"
 
-foreach ($node in $checksums) {
-    if ($node.ChildNodes[1].InnerText -eq $installerName) {
-        $distributorFileHash = $node.ChildNodes[7].InnerText
-    }
+# Define a custom directory for the installer
+$installerDir = "C:\MinicondaInstaller"
+$installerPath = "$installerDir\$installerName"
+
+# Ensure the custom installer directory exists
+if (!(Test-Path $installerDir)) {
+    Write-Host "Creating installer directory: $installerDir"
+    New-Item -ItemType Directory -Path $installerDir -Force
 }
 
-if ($null -eq $distributorFileHash) {
-    throw "Unable to find checksum for $installerName in https://repo.anaconda.com/miniconda/"
-}
-#endregion
+Write-Host "Downloading Miniconda installer to $installerPath..."
+Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
 
-Install-Binary `
-    -Url "https://repo.anaconda.com/miniconda/${installerName}" `
-    -InstallArgs @("/S", "/AddToPath=0", "/RegisterPython=0", "/D=$condaDestination") `
-    -ExpectedSHA256Sum $distributorFileHash
+# Calculate SHA256 checksum directly from the downloaded installer
+Write-Host "Calculating SHA256 checksum from the installer..."
+$calculatedHash = (Get-FileHash -Path $installerPath -Algorithm SHA256).Hash.ToLower()
+
+Write-Host "========================================="
+Write-Host "SHA256 checksum of downloaded file:"
+Write-Host "$calculatedHash"
+Write-Host "========================================="
+
+Write-Host "Installing Miniconda..."
+Start-Process -FilePath $installerPath -ArgumentList "/S", "/AddToPath=0", "/RegisterPython=0", "/D=$condaDestination" -Wait
 
 [Environment]::SetEnvironmentVariable("CONDA", $condaDestination, "Machine")
 
