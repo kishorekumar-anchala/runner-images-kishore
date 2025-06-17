@@ -8,19 +8,9 @@
 $condaDestination = "C:\Miniconda"
 $installerName = "Miniconda3-latest-Windows-x86_64.exe" 
 $installerUrl = "https://repo.anaconda.com/miniconda/$installerName"
-
-# Define a custom directory for the installer
-$installerDir = "C:\MinicondaInstaller"
-$installerPath = "$installerDir\$installerName"
-
-# Ensure the custom installer directory exists
-if (!(Test-Path $installerDir)) {
-    Write-Host "Creating installer directory: $installerDir"
-    New-Item -ItemType Directory -Path $installerDir -Force
-}
+$installerPath = "$env:TEMP_DIR\$installerName"
 
 # Download installer
-Write-Host "Downloading Miniconda installer to $installerPath..."
 Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
 
 # Fetch official checksum using ConvertFrom-HTML
@@ -57,6 +47,5 @@ Start-Process -FilePath $installerPath -ArgumentList "/S", "/AddToPath=0", "/Reg
 
 # Cleanup: Delete installer file and folder
 Remove-Item -Path $installerPath -Force
-Remove-Item -Path $installerDir -Recurse -Force
 
 Invoke-PesterTests -TestFile "Miniconda"
