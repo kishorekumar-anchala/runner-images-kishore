@@ -794,7 +794,7 @@ function Get-ChecksumFromGithubRelease {
         [Parameter(Mandatory = $true)]
         [Alias("File", "Asset")]
         [string] $FileName,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [ValidateSet("SHA256", "SHA512")]
         [string] $HashType
     )
@@ -867,7 +867,7 @@ function Get-ChecksumFromUrl {
         [Parameter(Mandatory = $true)]
         [Alias("File", "Asset")]
         [string] $FileName,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [ValidateSet("SHA256", "SHA512")]
         [Alias("Type")]
         [string] $HashType
