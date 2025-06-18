@@ -198,7 +198,8 @@ function Invoke-DownloadWithRetry {
     for ($retries = 20; $retries -gt 0; $retries--) {
         try {
             $attemptStartTime = Get-Date
-            (New-Object System.Net.WebClient).DownloadFile($Url, $Path)
+            $ProgressPreference = 'SilentlyContinue'
+            Invoke-WebRequest -Uri $Url -OutFile $Path -UseBasicParsing
             $attemptSeconds = [math]::Round(($(Get-Date) - $attemptStartTime).TotalSeconds, 2)
             Write-Host "Package downloaded in $attemptSeconds seconds"
             break
