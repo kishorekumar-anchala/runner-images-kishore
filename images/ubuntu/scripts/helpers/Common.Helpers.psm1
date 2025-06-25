@@ -129,6 +129,7 @@ function Invoke-DownloadWithRetry {
     for ($retries = 20; $retries -gt 0; $retries--) {
         try {
             $attemptStartTime = Get-Date
+            $ProgressPreference = 'SilentlyContinue'
             Invoke-WebRequest -Uri $Url -Outfile $DestinationPath
             $attemptSeconds = [math]::Round(($(Get-Date) - $attemptStartTime).TotalSeconds, 2)
             Write-Host "Package downloaded in $attemptSeconds seconds"
