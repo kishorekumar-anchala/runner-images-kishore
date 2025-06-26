@@ -7,6 +7,7 @@
 
 # Source the helpers for use with the script
 source $HELPER_SCRIPTS/install.sh
+source $HELPER_SCRIPTS/os.sh
 
 # Download KIND
 kind_url=$(resolve_github_release_asset_url "kubernetes-sigs/kind" "endswith(\"kind-linux-amd64\")" "latest")
@@ -23,7 +24,11 @@ install "${kind_binary_path}" /usr/local/bin/kind
 kubectl_minor_version=$(curl -fsSL "https://dl.k8s.io/release/stable.txt" | cut -d'.' -f1,2 )
 kubectl_apt_version="v${kubectl_minor_version}"
 
-sudo mkdir -p -m 755 /etc/apt/keyrings
+if is_ubuntu22; then
+  sudo mkdir -p -m 755 /etc/apt/keyrings
+fi
+
+
 curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubectl_apt_version}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/'${kubectl_apt_version}'/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 apt-get update
