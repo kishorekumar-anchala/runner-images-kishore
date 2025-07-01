@@ -20,6 +20,13 @@ use_checksum_comparison "${kind_binary_path}" "${kind_external_hash}"
 install "${kind_binary_path}" /usr/local/bin/kind
 
 ## Install kubectl
+# Ensure keyrings directory exists
+sudo mkdir -p -m 755 /etc/apt/keyrings
+
+# Install required dependencies
+apt-get update
+apt-get install -y ca-certificates curl gnupg
+
 kubectl_minor_version=$(curl -fsSL "https://dl.k8s.io/release/stable.txt" | cut -d'.' -f1,2 )
 curl -fsSL https://pkgs.k8s.io/core:/stable:/$kubectl_minor_version/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/'$kubectl_minor_version'/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
