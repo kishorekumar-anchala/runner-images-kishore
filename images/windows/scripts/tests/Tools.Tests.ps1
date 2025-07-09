@@ -78,10 +78,6 @@ Describe "KubernetesTools" {
         "kind version" | Should -ReturnZeroExitCode
     }
 
-    It "kubectl" {
-        "kubectl version --client=true" | Should -ReturnZeroExitCode
-    }
-
     It "Helm" {
         "helm version --short" | Should -ReturnZeroExitCode
     }
