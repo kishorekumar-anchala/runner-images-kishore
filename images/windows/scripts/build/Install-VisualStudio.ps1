@@ -59,7 +59,20 @@ if (Test-IsWin22) {
     -Url 'https://go.microsoft.com/fwlink/p/?LinkID=2033908' `
     -InstallArgs @("/q", "/norestart", "/ceip off", "/features OptionId.UWPManaged OptionId.UWPCPP OptionId.UWPLocalized OptionId.DesktopCPPx86 OptionId.DesktopCPPx64 OptionId.DesktopCPParm64") `
     -ExpectedSubject $(Get-MicrosoftPublisher)
+
+    # Install Windows 10 SDK version 10.0.20348.0
+    Install-Binary -Type EXE `
+    -Url 'https://go.microsoft.com/fwlink/?linkid=2164145' `
+    -InstallArgs @("/q", "/norestart", "/ceip off", "/features OptionId.UWPManaged OptionId.UWPCPP OptionId.UWPLocalized OptionId.DesktopCPPx86 OptionId.DesktopCPPx64 OptionId.DesktopCPParm64") `
+    -ExpectedSubject $(Get-MicrosoftPublisher)
+
+
+
 }
+
+
+
+
 
 if (-not (Test-IsWin19)) {
      # Install Windows 11 SDK version 10.0.26100
