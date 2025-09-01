@@ -1,11 +1,9 @@
 Describe "MongoDB" {
     Context "Version" {
         It "<ToolName>" -TestCases @(
-            if (Test-IsWin25) {
-                @{ ToolName = "mongos" }
-            } else {
-                @{ ToolName = "mongo" }
-            }
+            
+            @{ ToolName = "mongosh" }
+            
             @{ ToolName = "mongod" }
         ) {
             $toolsetVersion = (Get-ToolsetContent).mongodb.version
@@ -30,7 +28,7 @@ Describe "MongoDB" {
         }
     }
 
-    Context "Shell" -Skip:(-not (Test-IsWin25)) {
+    Context "Shell" {
         It "mongosh" {
             "mongosh --version" | Should -ReturnZeroExitCode
         }

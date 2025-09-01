@@ -40,7 +40,7 @@ Stop-Service $mongodbService
 $mongodbService | Set-Service -StartupType Disabled
 
 # Install mongodb shell for mongodb > 5 version
-if (Test-IsWin25) {
+# Updated: Install mongosh on all Windows versions
     $mongoshVersion = (Get-GithubReleasesByVersion -Repo "mongodb-js/mongosh" -Version "latest").version
 
     $mongoshDownloadUrl = Resolve-GithubReleaseAssetUrl `
@@ -52,6 +52,11 @@ if (Test-IsWin25) {
         -Url $mongoshDownloadUrl `
         -ExtraInstallArgs @('ALLUSERS=1') `
         -ExpectedSubject 'CN="MongoDB, Inc.", O="MongoDB, Inc.", L=New York, S=New York, C=US'
-}
+    
+# Add mongosh to PATH
+$mongoshPath = "C:\Program Files\MongoDB\mongosh\bin"
+if (Test-Path $mongoshPath) {
+    Add-MachinePathItem $mongoshPath
+}    
 
 Invoke-PesterTests -TestFile "Databases" -TestName "MongoDB"
