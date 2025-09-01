@@ -7,7 +7,16 @@ Describe "MongoDB" {
             @{ ToolName = "mongod" }
         ) {
             $toolsetVersion = (Get-ToolsetContent).mongodb.version
-            (& $ToolName --version)[2].Split('"')[-2] | Should -BeLike "$toolsetVersion*"
+            $output = & $ToolName --version
+
+            if ($output.Count -lt 3) {
+                throw "Unexpected version output from $ToolName: Less than 3 lines returned."
+            }
+
+            $versionLine = $output[2] -as [string]
+            $actualVersion = $versionLine.Split('"')[-2]
+
+            $actualVersion | Should -BeLike "$toolsetVersion*"
         }
     }
 
