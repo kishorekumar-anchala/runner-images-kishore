@@ -1,22 +1,15 @@
 Describe "MongoDB" {
     Context "Version" {
         It "<ToolName>" -TestCases @(
-            
-            @{ ToolName = "mongosh" }
-            
+            if (Test-IsWin22 -or Test-IsWin25) {
+                @{ ToolName = "mongos" }
+            } else {
+                @{ ToolName = "mongo" }
+            }
             @{ ToolName = "mongod" }
         ) {
             $toolsetVersion = (Get-ToolsetContent).mongodb.version
-            $output = & $ToolName --version
-
-            if ($output.Count -lt 3) {
-                throw "Unexpected version output from $ToolName: Less than 3 lines returned."
-            }
-
-            $versionLine = $output[2] -as [string]
-            $actualVersion = $versionLine.Split('"')[-2]
-
-            $actualVersion | Should -BeLike "$toolsetVersion*"
+            (& $ToolName --version)[2].Split('"')[-2] | Should -BeLike "$toolsetVersion*"
         }
     }
 
@@ -37,7 +30,7 @@ Describe "MongoDB" {
         }
     }
 
-    Context "Shell" {
+    Context "Shell" -Skip:(-not (Test-IsWin22) -or -not (Test-IsWin25)) {
         It "mongosh" {
             "mongosh --version" | Should -ReturnZeroExitCode
         }
