@@ -35,7 +35,7 @@ Add-MachinePathItem "$mongoBin"
 $mongodbService = Get-Service "mongodb"
 $mongodbService.WaitForStatus('Running', '00:01:00')
 
-# Stop and disable mongodb services
+# Stop and disable mongodb service
 Stop-Service $mongodbService
 $mongodbService | Set-Service -StartupType Disabled
 
