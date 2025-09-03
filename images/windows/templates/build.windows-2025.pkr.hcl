@@ -144,6 +144,7 @@ provisioner "powershell" {
   provisioner "powershell" {
     environment_vars = ["IMAGE_FOLDER=${var.image_folder}", "TEMP_DIR=${var.temp_dir}"]
     scripts          = [
+      "${path.root}/../scripts/build/Install-MongoDB.ps1",
       "${path.root}/../scripts/build/Install-ActionsCache.ps1",
       "${path.root}/../scripts/build/Install-Ruby.ps1",
       "${path.root}/../scripts/build/Install-PyPy.ps1",
@@ -183,7 +184,6 @@ provisioner "powershell" {
       "${path.root}/../scripts/build/Install-Vcpkg.ps1",
       "${path.root}/../scripts/build/Install-Bazel.ps1",
       "${path.root}/../scripts/build/Install-RootCA.ps1",
-      "${path.root}/../scripts/build/Install-MongoDB.ps1",
       "${path.root}/../scripts/build/Install-CodeQLBundle.ps1",
       "${path.root}/../scripts/build/Configure-Diagnostics.ps1"
     ]
