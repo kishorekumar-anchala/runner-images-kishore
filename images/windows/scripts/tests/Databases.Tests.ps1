@@ -1,17 +1,24 @@
 Describe "MongoDB" {
     Context "Version" {
-        It "<ToolName>" -TestCases @(
-            if (Test-IsWin22 -or Test-IsWin25) {
-                @{ ToolName = "mongos" }
-            } else {
-                @{ ToolName = "mongo" }
-            }
-            @{ ToolName = "mongod" }
-        ) {
+    
+        $testCases = @()
+
+        if (Test-IsWin22 -or Test-IsWin25) {
+            $testCases += @{ ToolName = "mongos" }
+        } else {
+            $testCases += @{ ToolName = "mongo" }
+        }
+
+        $testCases += @{ ToolName = "mongod" }
+
+        It "<ToolName>" -TestCases $testCases {
+            param($ToolName)
+
             $toolsetVersion = (Get-ToolsetContent).mongodb.version
             (& $ToolName --version)[2].Split('"')[-2] | Should -BeLike "$toolsetVersion*"
         }
     }
+
 
     Context "Service" {
         $mongoService = Get-Service -Name mongodb -ErrorAction Ignore
