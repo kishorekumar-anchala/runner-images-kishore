@@ -289,12 +289,11 @@
             },
             {
                 "name": "cmake.install",
-                "version": "3.31.6",
                 "args": [ "--installargs", "ADD_CMAKE_TO_PATH=\"System\"" ]
             },
             {
                 "name": "strawberryperl" ,
-                "args": [ "--version", "5.40.2.2" ]
+                "args": [ "--version", "5.42.0.1" ]
             },
             { "name": "imagemagick" },
             { "name": "ninja" }
