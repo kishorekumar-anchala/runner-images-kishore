@@ -3,7 +3,9 @@ Describe "MongoDB" {
     
         $testCases = @()
 
-        if (Test-IsWin22 -or Test-IsWin25) {
+        if (Test-IsWin25) {
+            $testCases += @{ ToolName = "mongosh" }
+        } elseif (Test-IsWin22) {
             $testCases += @{ ToolName = "mongos" }
         } else {
             $testCases += @{ ToolName = "mongo" }
